@@ -1,0 +1,6 @@
+export * from './faculty.controller'
+export * from './faculty.module'
+export * from './faculty.repository'
+export * from './faculty.service'
+export * from './dtos'
+export * from './interfaces'

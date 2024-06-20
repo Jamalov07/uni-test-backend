@@ -1,0 +1,6 @@
+export * from './science.controller'
+export * from './science.module'
+export * from './science.repository'
+export * from './science.service'
+export * from './dtos'
+export * from './interfaces'
