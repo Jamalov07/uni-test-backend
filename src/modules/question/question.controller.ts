@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { QuestionService } from './question.service'
 import {
@@ -11,9 +11,19 @@ import {
 	QuestionUpdateRequestDto,
 	QuestionFindAllResponseDto,
 	QuestionFindOneResponseDto,
+	QuestionsCreateWithAnswersDto,
 } from './dtos'
-import { QuestionCreateResponse, QuestionDeleteResponse, QuestionFindAllResponse, QuestionFindFullResponse, QuestionFindOneResponse, QuestionUpdateResponse } from './interfaces'
+import {
+	QuestionCreateResponse,
+	QuestionDeleteResponse,
+	QuestionFindAllResponse,
+	QuestionFindFullResponse,
+	QuestionFindOneResponse,
+	QuestionUpdateResponse,
+	QuestionsCreateWithAnswersResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Question')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -41,6 +51,24 @@ export class QuestionController {
 	@ApiResponse({ type: QuestionFindOneResponseDto })
 	findOne(@Param() payload: QuestionFindOneRequestDto): Promise<QuestionFindOneResponse> {
 		return this.service.findOne(payload)
+	}
+
+	@Post('file')
+	@UseInterceptors(
+		FileInterceptor('file', {
+			// storage: multer.memoryStorage(),
+			fileFilter(req, file, cb) {
+				if (file.mimetype !== 'text/plain') {
+					return cb(new BadRequestException('Invalid file type'), false)
+				}
+				cb(null, true)
+			},
+		}),
+	)
+	@ApiResponse({ type: null })
+	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: any): Promise<QuestionsCreateWithAnswersResponse> {
+		console.log(file.buffer.toString())
+		return this.service.createManyWithAnswers(payload, file.buffer.toString())
 	}
 
 	@Post()

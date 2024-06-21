@@ -8,6 +8,7 @@ import {
 	QuestionFindOneRequest,
 	QuestionFindOneResponse,
 	QuestionUpdateRequest,
+	QuestionsCreateWithAnswersRequest,
 } from '../interfaces'
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
@@ -59,6 +60,13 @@ export class QuestionCreateRequestDto implements QuestionCreateRequest {
 	@IsNotEmpty()
 	text: string
 
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	collectionId: string
+}
+
+export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'> {
 	@ApiProperty({ example: 'uuid' })
 	@IsUUID('4')
 	@IsNotEmpty()

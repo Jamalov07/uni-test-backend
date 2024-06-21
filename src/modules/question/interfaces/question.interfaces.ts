@@ -21,6 +21,20 @@ export declare interface QuestionCreateRequest {
 	collectionId: string
 }
 
+export declare interface QuestionsCreateWithAnswersRequest {
+	collectionId: string
+	questions: QuestionDefinition[]
+}
+
+export declare interface QuestionDefinition {
+	text: string
+	answers: AnswerDefinition[]
+}
+
+export declare interface AnswerDefinition {
+	text: string
+	isCorrect: boolean
+}
 export declare interface QuestionUpdateRequest {
 	text?: string
 	collectionId?: string
@@ -49,6 +63,8 @@ export declare interface QuestionFindOneResponse {
 }
 
 export declare type QuestionCreateResponse = null
+
+export declare type QuestionsCreateWithAnswersResponse = null
 
 export declare type QuestionUpdateResponse = null
 
