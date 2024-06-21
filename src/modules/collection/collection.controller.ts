@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CollectionService } from './collection.service'
 import {
@@ -21,6 +21,7 @@ import {
 	CollectionUpdateResponse,
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Collection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -54,6 +55,22 @@ export class CollectionController {
 	@ApiResponse({ type: null })
 	create(@Body() payload: CollectionCreateRequestDto): Promise<CollectionCreateResponse> {
 		return this.service.create(payload)
+	}
+
+	@Post('with-questions')
+	@UseInterceptors(
+		FileInterceptor('file', {
+			fileFilter(req, file, cb) {
+				if (file.mimetype !== 'text/plain') {
+					return cb(new BadRequestException('Invalid file type'), false)
+				}
+				cb(null, true)
+			},
+		}),
+	)
+	@ApiResponse({ type: null })
+	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: any): Promise<CollectionCreateResponse> {
+		return this.service.createWithQuestions(payload, file.buffer.toString())
 	}
 
 	@Patch(':id')

@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import {
 	CollectionCreateRequest,
 	CollectionDeleteRequest,
@@ -83,16 +84,19 @@ export class CollectionCreateRequestDto implements CollectionCreateRequest {
 	@ApiProperty({ example: 5 })
 	@IsNumber()
 	@IsNotEmpty()
+	@Type(() => Number)
 	amountInTest: number
 
 	@ApiProperty({ example: 5 })
 	@IsNumber()
 	@IsNotEmpty()
+	@Type(() => Number)
 	givenMinutes: number
 
 	@ApiProperty({ example: 5 })
 	@IsNumber()
 	@IsNotEmpty()
+	@Type(() => Number)
 	maxAttempts: number
 }
 

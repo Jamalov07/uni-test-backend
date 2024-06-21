@@ -56,7 +56,6 @@ export class QuestionController {
 	@Post('file')
 	@UseInterceptors(
 		FileInterceptor('file', {
-			// storage: multer.memoryStorage(),
 			fileFilter(req, file, cb) {
 				if (file.mimetype !== 'text/plain') {
 					return cb(new BadRequestException('Invalid file type'), false)
@@ -67,7 +66,6 @@ export class QuestionController {
 	)
 	@ApiResponse({ type: null })
 	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: any): Promise<QuestionsCreateWithAnswersResponse> {
-		console.log(file.buffer.toString())
 		return this.service.createManyWithAnswers(payload, file.buffer.toString())
 	}
 

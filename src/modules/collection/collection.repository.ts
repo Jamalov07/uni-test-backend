@@ -131,6 +131,20 @@ export class CollectionRepository {
 		return null
 	}
 
+	async createWithReturningId(payload: CollectionCreateRequest): Promise<string> {
+		const collection = await this.prisma.collection.create({
+			data: {
+				name: payload.name,
+				amountInTest: payload.amountInTest,
+				givenMinutes: payload.amountInTest,
+				language: payload.language,
+				maxAttempts: payload.maxAttempts,
+				scienceId: payload.scienceId,
+			},
+		})
+		return collection.id
+	}
+
 	async update(payload: CollectionFindOneRequest & CollectionUpdateRequest): Promise<CollectionUpdateRequest> {
 		await this.prisma.collection.update({
 			where: { id: payload.id },

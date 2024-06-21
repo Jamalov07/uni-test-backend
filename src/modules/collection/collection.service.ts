@@ -14,12 +14,15 @@ import {
 	CollectionUpdateRequest,
 	CollectionUpdateResponse,
 } from './interfaces'
+import { QuestionService } from '../question'
 
 @Injectable()
 export class CollectionService {
 	private readonly repository: CollectionRepository
-	constructor(repository: CollectionRepository) {
+	private readonly questionService: QuestionService
+	constructor(repository: CollectionRepository, questionService: QuestionService) {
 		this.repository = repository
+		this.questionService = questionService
 	}
 
 	async findFull(payload: CollectionFindFullRequest): Promise<CollectionFindFullResponse> {
@@ -51,6 +54,13 @@ export class CollectionService {
 	async create(payload: CollectionCreateRequest): Promise<CollectionCreateResponse> {
 		await this.findOneByName({ name: payload.name })
 		return this.repository.create(payload)
+	}
+
+	async createWithQuestions(payload: CollectionCreateRequest, text: string): Promise<CollectionCreateResponse> {
+		await this.findOneByName({ name: payload.name })
+		const collectionId = await this.repository.createWithReturningId(payload)
+		await this.questionService.createManyWithAnswers({ collectionId: collectionId }, text)
+		return null
 	}
 
 	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<CollectionUpdateResponse> {
