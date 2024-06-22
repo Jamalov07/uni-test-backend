@@ -121,10 +121,10 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 	@IsNotEmpty()
 	type: $Enums.UserType
 
-	@ApiProperty({ type: UserInfoWithOutUserIdDto })
+	@ApiPropertyOptional({ type: UserInfoWithOutUserIdDto })
 	@IsObject()
-	@IsNotEmpty()
-	userInfo: Omit<UserInfoCreateRequest, 'userId'>
+	@IsOptional()
+	userInfo?: Omit<UserInfoCreateRequest, 'userId'>
 }
 
 export class UserUpdateRequestDto implements UserUpdateRequest {

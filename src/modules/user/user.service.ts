@@ -82,7 +82,7 @@ export class UserService {
 
 	async createWithUserInfo(payload: UserCreateWithInfoRequest): Promise<UserCreateResponse> {
 		const userId = await this.repository.createWithReturningId(payload)
-		await this.userInfoService.create({ ...payload.userInfo, userId: userId })
+		payload.userInfo ? await this.userInfoService.create({ ...payload.userInfo, userId: userId }) : null
 
 		return null
 	}
