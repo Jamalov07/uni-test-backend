@@ -65,7 +65,7 @@ export class UserCollectionRepository {
 
 	async findOne(payload: UserCollectionFindOneRequest): Promise<UserCollectionFindOneResponse> {
 		const userCollection = await this.prisma.userCollection.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
@@ -99,14 +99,14 @@ export class UserCollectionRepository {
 
 	async update(payload: UserCollectionFindOneRequest & UserCollectionUpdateRequest): Promise<UserCollectionUpdateRequest> {
 		await this.prisma.userCollection.update({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			data: { haveAttempt: payload.haveAttempt, userId: payload.userId, collectionId: payload.collectionId },
 		})
 		return null
 	}
 
 	async delete(payload: UserCollectionDeleteRequest): Promise<UserCollectionDeleteResponse> {
-		await this.prisma.userCollection.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.userCollection.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

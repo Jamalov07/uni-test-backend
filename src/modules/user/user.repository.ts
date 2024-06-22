@@ -28,6 +28,7 @@ export class UserRepository {
 				fullName: { contains: payload.fullName, mode: 'insensitive' },
 				emailAddress: { contains: payload.emailAddress, mode: 'insensitive' },
 				type: payload.type,
+				deletedAt: null,
 			},
 			select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true },
 		})
@@ -41,6 +42,7 @@ export class UserRepository {
 				fullName: { contains: payload.fullName, mode: 'insensitive' },
 				emailAddress: { contains: payload.emailAddress, mode: 'insensitive' },
 				type: payload.type,
+				deletedAt: null,
 			},
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
@@ -52,6 +54,7 @@ export class UserRepository {
 				fullName: { contains: payload.fullName, mode: 'insensitive' },
 				emailAddress: { contains: payload.emailAddress, mode: 'insensitive' },
 				type: payload.type,
+				deletedAt: null,
 			},
 		})
 
@@ -65,7 +68,7 @@ export class UserRepository {
 
 	async findOne(payload: UserFindOneRequest): Promise<UserFindOneResponse> {
 		const user = await this.prisma.user.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				createdAt: true,
@@ -97,7 +100,7 @@ export class UserRepository {
 
 	async findOneWithPassword(payload: UserFindOneRequest): Promise<UserFindOneResponse> {
 		const user = await this.prisma.user.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				createdAt: true,
@@ -129,7 +132,7 @@ export class UserRepository {
 	}
 
 	async findByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
-		const user = await this.prisma.user.findFirst({ where: { emailAddress: payload.emailAddress, id: { not: payload.id } } })
+		const user = await this.prisma.user.findFirst({ where: { emailAddress: payload.emailAddress, id: { not: payload.id }, deletedAt: null } })
 		return user
 	}
 
@@ -147,14 +150,14 @@ export class UserRepository {
 
 	async update(payload: UserFindOneRequest & UserUpdateRequest): Promise<UserUpdateRequest> {
 		await this.prisma.user.update({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: '' },
 		})
 		return null
 	}
 
 	async delete(payload: UserDeleteRequest): Promise<UserDeleteResponse> {
-		await this.prisma.user.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.user.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

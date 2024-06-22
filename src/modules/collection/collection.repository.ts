@@ -28,6 +28,7 @@ export class CollectionRepository {
 				language: payload.language,
 				name: { contains: payload.name, mode: 'insensitive' },
 				scienceId: payload.scienceId,
+				deletedAt: null,
 			},
 
 			select: {
@@ -53,6 +54,7 @@ export class CollectionRepository {
 				language: payload.language,
 				name: { contains: payload.name, mode: 'insensitive' },
 				scienceId: payload.scienceId,
+				deletedAt: null,
 			},
 			select: {
 				id: true,
@@ -71,6 +73,7 @@ export class CollectionRepository {
 				language: payload.language,
 				name: { contains: payload.name, mode: 'insensitive' },
 				scienceId: payload.scienceId,
+				deletedAt: null,
 			},
 		})
 
@@ -84,7 +87,7 @@ export class CollectionRepository {
 
 	async findOne(payload: CollectionFindOneRequest): Promise<CollectionFindOneResponse> {
 		const collection = await this.prisma.collection.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				language: true,
@@ -102,7 +105,7 @@ export class CollectionRepository {
 
 	async findByName(payload: { name: string }): Promise<CollectionFindOneResponse> {
 		const collection = await this.prisma.collection.findFirst({
-			where: { name: payload.name },
+			where: { name: payload.name, deletedAt: null },
 			select: {
 				id: true,
 				language: true,
@@ -140,6 +143,7 @@ export class CollectionRepository {
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
+				deletedAt: null,
 			},
 		})
 		return collection.id
@@ -147,7 +151,7 @@ export class CollectionRepository {
 
 	async update(payload: CollectionFindOneRequest & CollectionUpdateRequest): Promise<CollectionUpdateRequest> {
 		await this.prisma.collection.update({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			data: {
 				name: payload.name,
 				amountInTest: payload.amountInTest,
@@ -161,7 +165,7 @@ export class CollectionRepository {
 	}
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
-		await this.prisma.collection.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.collection.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

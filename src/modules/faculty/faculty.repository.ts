@@ -25,6 +25,7 @@ export class FacultyRepository {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async findFull(payload: FacultyFindFullRequest): Promise<FacultyFindFullResponse> {
 		const facultys = await this.prisma.faculty.findMany({
+			where: { deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
 		})
 
@@ -33,12 +34,15 @@ export class FacultyRepository {
 
 	async findAll(payload: FacultyFindAllRequest): Promise<FacultyFindAllResponse> {
 		const facultys = await this.prisma.faculty.findMany({
+			where: { deletedAt: null },
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, name: true, createdAt: true },
 		})
 
-		const facultysCount = await this.prisma.faculty.count({})
+		const facultysCount = await this.prisma.faculty.count({
+			where: { deletedAt: null },
+		})
 
 		return {
 			pageSize: facultys.length,
@@ -50,7 +54,7 @@ export class FacultyRepository {
 
 	async findOne(payload: FacultyFindOneRequest): Promise<FacultyFindOneResponse> {
 		const faculty = await this.prisma.faculty.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
 		})
 
@@ -58,7 +62,7 @@ export class FacultyRepository {
 	}
 
 	async findByName(payload: Partial<FacultyFindOneResponse>): Promise<FacultyFindOneResponse> {
-		const faculty = await this.prisma.faculty.findFirst({ where: { name: payload.name, id: { not: payload.id } } })
+		const faculty = await this.prisma.faculty.findFirst({ where: { name: payload.name, deletedAt: null, id: { not: payload.id } } })
 		return faculty
 	}
 
@@ -68,12 +72,12 @@ export class FacultyRepository {
 	}
 
 	async update(payload: FacultyFindOneRequest & FacultyUpdateRequest): Promise<FacultyUpdateRequest> {
-		await this.prisma.faculty.update({ where: { id: payload.id }, data: { name: payload.name } })
+		await this.prisma.faculty.update({ where: { id: payload.id, deletedAt: null }, data: { name: payload.name } })
 		return null
 	}
 
 	async delete(payload: FacultyDeleteRequest): Promise<FacultyDeleteResponse> {
-		await this.prisma.faculty.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.faculty.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

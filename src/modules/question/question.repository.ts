@@ -26,7 +26,7 @@ export class QuestionRepository {
 
 	async findFull(payload: QuestionFindFullRequest): Promise<QuestionFindFullResponse> {
 		const questions = await this.prisma.question.findMany({
-			where: { text: { contains: payload.text, mode: 'insensitive' } },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -42,7 +42,7 @@ export class QuestionRepository {
 		const questions = await this.prisma.question.findMany({
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
-			where: { text: { contains: payload.text, mode: 'insensitive' } },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -51,7 +51,9 @@ export class QuestionRepository {
 			},
 		})
 
-		const questionsCount = await this.prisma.question.count({})
+		const questionsCount = await this.prisma.question.count({
+			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
+		})
 
 		return {
 			pageSize: questions.length,
@@ -63,7 +65,7 @@ export class QuestionRepository {
 
 	async findOne(payload: QuestionFindOneRequest): Promise<QuestionFindOneResponse> {
 		const question = await this.prisma.question.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -77,7 +79,7 @@ export class QuestionRepository {
 
 	async findByTextWithCollectionId(payload: Partial<QuestionCreateRequest>): Promise<QuestionFindOneResponse> {
 		const question = await this.prisma.question.findFirst({
-			where: { text: payload.text, collectionId: payload.collectionId },
+			where: { text: payload.text, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -90,7 +92,7 @@ export class QuestionRepository {
 
 	async findByTextsWithCollectionId(payload: { texts: string[]; collectionId: string }): Promise<QuestionFindFullResponse> {
 		const questions = await this.prisma.question.findMany({
-			where: { text: { in: payload.texts }, collectionId: payload.collectionId },
+			where: { text: { in: payload.texts }, collectionId: payload.collectionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -135,12 +137,12 @@ export class QuestionRepository {
 	}
 
 	async update(payload: QuestionFindOneRequest & QuestionUpdateRequest): Promise<QuestionUpdateRequest> {
-		await this.prisma.question.update({ where: { id: payload.id }, data: { text: payload.text, collectionId: payload.collectionId } })
+		await this.prisma.question.update({ where: { id: payload.id, deletedAt: null }, data: { text: payload.text, collectionId: payload.collectionId } })
 		return null
 	}
 
 	async delete(payload: QuestionDeleteRequest): Promise<QuestionDeleteResponse> {
-		await this.prisma.question.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.question.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

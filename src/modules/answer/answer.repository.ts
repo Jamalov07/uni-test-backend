@@ -24,7 +24,7 @@ export class AnswerRepository {
 
 	async findFull(payload: AnswerFindFullRequest): Promise<AnswerFindFullResponse> {
 		const answers = await this.prisma.answer.findMany({
-			where: { text: { contains: payload.text, mode: 'insensitive' } },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -41,7 +41,7 @@ export class AnswerRepository {
 		const answers = await this.prisma.answer.findMany({
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
-			where: { text: { contains: payload.text, mode: 'insensitive' } },
+			where: { text: { contains: payload.text, mode: 'insensitive' }, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -63,7 +63,7 @@ export class AnswerRepository {
 
 	async findOne(payload: AnswerFindOneRequest): Promise<AnswerFindOneResponse> {
 		const answer = await this.prisma.answer.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -78,7 +78,7 @@ export class AnswerRepository {
 
 	async findByTextWithQuestionId(payload: Partial<AnswerCreateRequest>): Promise<AnswerFindOneResponse> {
 		const answer = await this.prisma.answer.findFirst({
-			where: { text: payload.text, questionId: payload.questionId },
+			where: { text: payload.text, questionId: payload.questionId, deletedAt: null },
 			select: {
 				id: true,
 				text: true,
@@ -96,12 +96,12 @@ export class AnswerRepository {
 	}
 
 	async update(payload: AnswerFindOneRequest & AnswerUpdateRequest): Promise<AnswerUpdateRequest> {
-		await this.prisma.answer.update({ where: { id: payload.id }, data: { text: payload.text, questionId: payload.questionId, isCorrect: payload.isCorrect } })
+		await this.prisma.answer.update({ where: { id: payload.id, deletedAt: null }, data: { text: payload.text, questionId: payload.questionId, isCorrect: payload.isCorrect } })
 		return null
 	}
 
 	async delete(payload: AnswerDeleteRequest): Promise<AnswerDeleteResponse> {
-		await this.prisma.answer.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.answer.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

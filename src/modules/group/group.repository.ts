@@ -51,7 +51,9 @@ export class GroupRepository {
 			},
 		})
 
-		const groupsCount = await this.prisma.group.count({})
+		const groupsCount = await this.prisma.group.count({
+			where: { courseId: payload.courseId, facultyId: payload.facultyId, deletedAt: null },
+		})
 
 		return {
 			pageSize: groups.length,
@@ -63,7 +65,7 @@ export class GroupRepository {
 
 	async findOne(payload: GroupFindOneRequest): Promise<GroupFindOneResponse> {
 		const group = await this.prisma.group.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -78,7 +80,7 @@ export class GroupRepository {
 
 	async findByName(payload: Partial<GroupFindOneResponse>): Promise<GroupFindOneResponse> {
 		const group = await this.prisma.group.findFirst({
-			where: { name: payload.name, id: { not: payload.id } },
+			where: { name: payload.name, id: { not: payload.id }, deletedAt: null },
 			select: {
 				id: true,
 				course: { select: { id: true, stage: true, createdAt: true } },
@@ -96,12 +98,12 @@ export class GroupRepository {
 	}
 
 	async update(payload: GroupFindOneRequest & GroupUpdateRequest): Promise<GroupUpdateRequest> {
-		await this.prisma.group.update({ where: { id: payload.id }, data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId } })
+		await this.prisma.group.update({ where: { id: payload.id, deletedAt: null }, data: { name: payload.name, courseId: payload.courseId, facultyId: payload.facultyId } })
 		return null
 	}
 
 	async delete(payload: GroupDeleteRequest): Promise<GroupDeleteResponse> {
-		await this.prisma.group.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.group.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

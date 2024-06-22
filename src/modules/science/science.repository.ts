@@ -25,6 +25,7 @@ export class ScienceRepository {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async findFull(payload: ScienceFindFullRequest): Promise<ScienceFindFullResponse> {
 		const sciences = await this.prisma.science.findMany({
+			where: { deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
 		})
 
@@ -33,12 +34,15 @@ export class ScienceRepository {
 
 	async findAll(payload: ScienceFindAllRequest): Promise<ScienceFindAllResponse> {
 		const sciences = await this.prisma.science.findMany({
+			where: { deletedAt: null },
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, name: true, createdAt: true },
 		})
 
-		const sciencesCount = await this.prisma.science.count({})
+		const sciencesCount = await this.prisma.science.count({
+			where: { deletedAt: null },
+		})
 
 		return {
 			pageSize: sciences.length,
@@ -50,7 +54,7 @@ export class ScienceRepository {
 
 	async findOne(payload: ScienceFindOneRequest): Promise<ScienceFindOneResponse> {
 		const science = await this.prisma.science.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
 		})
 
@@ -58,7 +62,7 @@ export class ScienceRepository {
 	}
 
 	async findByName(payload: Partial<ScienceFindOneResponse>): Promise<ScienceFindOneResponse> {
-		const science = await this.prisma.science.findFirst({ where: { name: payload.name, id: { not: payload.id } } })
+		const science = await this.prisma.science.findFirst({ where: { name: payload.name, id: { not: payload.id }, deletedAt: null } })
 		return science
 	}
 
@@ -68,12 +72,12 @@ export class ScienceRepository {
 	}
 
 	async update(payload: ScienceFindOneRequest & ScienceUpdateRequest): Promise<ScienceUpdateRequest> {
-		await this.prisma.science.update({ where: { id: payload.id }, data: { name: payload.name } })
+		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { name: payload.name } })
 		return null
 	}
 
 	async delete(payload: ScienceDeleteRequest): Promise<ScienceDeleteResponse> {
-		await this.prisma.science.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

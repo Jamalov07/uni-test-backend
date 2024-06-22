@@ -28,6 +28,7 @@ export class UserInfoRepository {
 				userId: payload.userId,
 				hemisId: { contains: payload.hemisId, mode: 'insensitive' },
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 			select: {
 				id: true,
@@ -47,6 +48,7 @@ export class UserInfoRepository {
 				userId: payload.userId,
 				hemisId: { contains: payload.hemisId, mode: 'insensitive' },
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
@@ -64,6 +66,7 @@ export class UserInfoRepository {
 				userId: payload.userId,
 				hemisId: { contains: payload.hemisId, mode: 'insensitive' },
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 		})
 
@@ -77,7 +80,7 @@ export class UserInfoRepository {
 
 	async findOne(payload: UserInfoFindOneRequest): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.prisma.userInfo.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
@@ -92,7 +95,7 @@ export class UserInfoRepository {
 
 	async findOneByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.prisma.userInfo.findFirst({
-			where: { hemisId: payload.hemisId },
+			where: { hemisId: payload.hemisId, deletedAt: null },
 			select: {
 				id: true,
 				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
@@ -141,12 +144,12 @@ export class UserInfoRepository {
 	}
 
 	async update(payload: UserInfoFindOneRequest & UserInfoUpdateRequest): Promise<UserInfoUpdateRequest> {
-		await this.prisma.userInfo.update({ where: { id: payload.id }, data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId } })
+		await this.prisma.userInfo.update({ where: { id: payload.id, deletedAt: null }, data: { userId: payload.userId, hemisId: payload.hemisId, groupId: payload.groupId } })
 		return null
 	}
 
 	async delete(payload: UserInfoDeleteRequest): Promise<UserInfoDeleteResponse> {
-		await this.prisma.userInfo.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.userInfo.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

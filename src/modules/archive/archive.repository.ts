@@ -36,6 +36,7 @@ export class ArchiveRepository {
 				facultyId: payload.facultyId,
 				userId: payload.userId,
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 			select: {
 				id: true,
@@ -73,6 +74,7 @@ export class ArchiveRepository {
 				facultyId: payload.facultyId,
 				userId: payload.userId,
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 			select: {
 				id: true,
@@ -104,6 +106,7 @@ export class ArchiveRepository {
 				facultyId: payload.facultyId,
 				userId: payload.userId,
 				groupId: payload.groupId,
+				deletedAt: null,
 			},
 		})
 
@@ -117,7 +120,7 @@ export class ArchiveRepository {
 
 	async findOne(payload: ArchiveFindOneRequest): Promise<ArchiveFindOneResponse> {
 		const archive = await this.prisma.archive.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: {
 				id: true,
 				collection: {
@@ -163,12 +166,12 @@ export class ArchiveRepository {
 	}
 
 	async update(payload: ArchiveFindOneRequest & ArchiveUpdateRequest): Promise<ArchiveUpdateRequest> {
-		await this.prisma.archive.update({ where: { id: payload.id }, data: { result: payload.result } })
+		await this.prisma.archive.update({ where: { id: payload.id, deletedAt: null }, data: { result: payload.result } })
 		return null
 	}
 
 	async delete(payload: ArchiveDeleteRequest): Promise<ArchiveDeleteResponse> {
-		await this.prisma.archive.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.archive.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }

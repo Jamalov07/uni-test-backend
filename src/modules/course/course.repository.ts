@@ -25,6 +25,7 @@ export class CourseRepository {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async findFull(payload: CourseFindFullRequest): Promise<CourseFindFullResponse> {
 		const courses = await this.prisma.course.findMany({
+			where: { deletedAt: null },
 			select: { id: true, stage: true, createdAt: true },
 		})
 
@@ -33,6 +34,7 @@ export class CourseRepository {
 
 	async findAll(payload: CourseFindAllRequest): Promise<CourseFindAllResponse> {
 		const courses = await this.prisma.course.findMany({
+			where: { deletedAt: null },
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, stage: true, createdAt: true },
@@ -50,7 +52,7 @@ export class CourseRepository {
 
 	async findOne(payload: CourseFindOneRequest): Promise<CourseFindOneResponse> {
 		const course = await this.prisma.course.findFirst({
-			where: { id: payload.id },
+			where: { id: payload.id, deletedAt: null },
 			select: { id: true, stage: true, createdAt: true },
 		})
 
@@ -58,8 +60,13 @@ export class CourseRepository {
 	}
 
 	async findByStage(payload: Partial<CourseFindOneResponse>): Promise<CourseFindOneResponse> {
-		console.log(payload)
-		const course = await this.prisma.course.findFirst({ where: { stage: payload.stage, id: { not: payload.id } } })
+		const course = await this.prisma.course.findFirst({
+			where: {
+				stage: payload.stage,
+				deletedAt: null,
+				id: { not: payload.id },
+			},
+		})
 		return course
 	}
 
@@ -69,12 +76,12 @@ export class CourseRepository {
 	}
 
 	async update(payload: CourseFindOneRequest & CourseUpdateRequest): Promise<CourseUpdateRequest> {
-		await this.prisma.course.update({ where: { id: payload.id }, data: { stage: payload.stage } })
+		await this.prisma.course.update({ where: { id: payload.id, deletedAt: null }, data: { stage: payload.stage } })
 		return null
 	}
 
 	async delete(payload: CourseDeleteRequest): Promise<CourseDeleteResponse> {
-		await this.prisma.course.update({ where: { id: payload.id }, data: { deletedAt: new Date() } })
+		await this.prisma.course.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
 }
