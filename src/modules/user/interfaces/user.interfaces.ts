@@ -1,5 +1,5 @@
 import { UserType } from '@prisma/client'
-import { UserInfoFindOneResponse } from '../../user-info'
+import { UserInfoCreateRequest, UserInfoFindOneResponse } from '../../user-info'
 
 export declare interface UserFindFullRequest {
 	type?: UserType
@@ -19,13 +19,20 @@ export declare interface UserFindOneRequest {
 	id: string
 }
 
+export declare interface UserSignInRequest {
+	hemisId: string
+	password: string
+}
+
 export declare interface UserCreateRequest {
 	fullName: string
 	// image: string
 	type: UserType
 	password: string
-	emailAddress: string
+	emailAddress?: string
 }
+
+export declare type UserCreateWithInfoRequest = UserCreateRequest & { userInfo: Omit<UserInfoCreateRequest, 'userId'> }
 
 export declare interface UserUpdateRequest {
 	fullName?: string
@@ -55,9 +62,21 @@ export declare interface UserFindOneResponse {
 	fullName: string
 	image: string
 	type: string
+	password?: string
 	emailAddress: string
 	userInfo?: UserInfoFindOneResponse
 	createdAt: Date
+}
+
+export declare interface UserSignInResponse {
+	user: UserFindOneResponse
+	userInfo: UserInfoFindOneResponse
+	tokens: SignInTokenDefinition
+}
+
+export declare interface SignInTokenDefinition {
+	accessToken: string
+	refreshToken: string
 }
 
 export declare type UserCreateResponse = null

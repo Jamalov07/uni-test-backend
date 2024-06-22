@@ -11,8 +11,11 @@ import {
 	UserUpdateRequestDto,
 	UserFindAllResponseDto,
 	UserFindOneResponseDto,
+	UserSignInRequestDto,
+	UserSignInResponseDto,
+	UserCreateWithInfoRequestDto,
 } from './dtos'
-import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserUpdateResponse } from './interfaces'
+import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 
 @ApiTags('User')
@@ -47,6 +50,18 @@ export class UserController {
 	@ApiResponse({ type: null })
 	create(@Body() payload: UserCreateRequestDto): Promise<UserCreateResponse> {
 		return this.service.create(payload)
+	}
+
+	@Post('with-info')
+	@ApiResponse({ type: null })
+	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto): Promise<UserCreateResponse> {
+		return this.service.createWithUserInfo(payload)
+	}
+
+	@Post('sign-in')
+	@ApiResponse({ type: UserSignInResponseDto })
+	signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
+		return this.service.singIn(payload)
 	}
 
 	@Patch(':id')

@@ -8,6 +8,6 @@ import { PrismaModule } from '../prisma'
 	imports: [PrismaModule],
 	controllers: [UserInfoController],
 	providers: [UserInfoService, UserInfoRepository],
-	exports: [],
+	exports: [UserInfoService, UserInfoRepository],
 })
 export class UserInfoModule {}

@@ -24,6 +24,7 @@ import {
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { UploadedTxtFile } from '../../interfaces'
 
 @ApiTags('Question')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -65,7 +66,7 @@ export class QuestionController {
 		}),
 	)
 	@ApiResponse({ type: null })
-	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: any): Promise<QuestionsCreateWithAnswersResponse> {
+	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: UploadedTxtFile): Promise<QuestionsCreateWithAnswersResponse> {
 		return this.service.createManyWithAnswers(payload, file.buffer.toString())
 	}
 

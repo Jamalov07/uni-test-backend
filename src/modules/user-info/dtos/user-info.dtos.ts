@@ -82,6 +82,23 @@ export class UserInfoCreateRequestDto implements UserInfoCreateRequest {
 	hemisId: string
 }
 
+export class UserInfoWithOutUserIdDto implements Omit<UserInfoCreateRequest, 'userId'> {
+	@ApiProperty({ example: 'userId' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	userId: string
+
+	@ApiProperty({ example: 'groupid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	groupId: string
+
+	@ApiProperty({ example: 'hemisid' })
+	@IsString()
+	@IsNotEmpty()
+	hemisId: string
+}
+
 export class UserInfoUpdateRequestDto implements UserInfoUpdateRequest {
 	@ApiPropertyOptional({ example: 'userId' })
 	@IsUUID('4')

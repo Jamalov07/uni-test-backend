@@ -22,6 +22,7 @@ import {
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { UploadedTxtFile } from '../../interfaces'
 
 @ApiTags('Collection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -69,7 +70,7 @@ export class CollectionController {
 		}),
 	)
 	@ApiResponse({ type: null })
-	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: any): Promise<CollectionCreateResponse> {
+	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionCreateResponse> {
 		return this.service.createWithQuestions(payload, file.buffer.toString())
 	}
 

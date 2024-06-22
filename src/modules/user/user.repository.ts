@@ -95,6 +95,39 @@ export class UserRepository {
 		return user
 	}
 
+	async findOneWithPassword(payload: UserFindOneRequest): Promise<UserFindOneResponse> {
+		const user = await this.prisma.user.findFirst({
+			where: { id: payload.id },
+			select: {
+				id: true,
+				createdAt: true,
+				fullName: true,
+				emailAddress: true,
+				image: true,
+				password: true,
+				type: true,
+				userInfo: {
+					select: {
+						hemisId: true,
+						group: {
+							select: {
+								id: true,
+								course: { select: { id: true, stage: true, createdAt: true } },
+								faculty: { select: { id: true, name: true, createdAt: true } },
+								name: true,
+								createdAt: true,
+							},
+						},
+						id: true,
+						createdAt: true,
+					},
+				},
+			},
+		})
+
+		return user
+	}
+
 	async findByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
 		const user = await this.prisma.user.findFirst({ where: { emailAddress: payload.emailAddress, id: { not: payload.id } } })
 		return user
@@ -103,6 +136,13 @@ export class UserRepository {
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		await this.prisma.user.create({ data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: '' } })
 		return null
+	}
+
+	async createWithReturningId(payload: UserCreateRequest): Promise<string> {
+		const user = await this.prisma.user.create({
+			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: '' },
+		})
+		return user.id
 	}
 
 	async update(payload: UserFindOneRequest & UserUpdateRequest): Promise<UserUpdateRequest> {

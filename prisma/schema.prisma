@@ -88,7 +88,7 @@ model User {
   type          UserType
   password      String     @map("password")       @db.VarChar(255)
   fullName      String     @map("full_name")      @db.VarChar(255) 
-  emailAddress  String     @map("email_address")  @db.VarChar(255)
+  emailAddress  String?    @map("email_address")  @db.VarChar(255)
   createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
   updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
   deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp

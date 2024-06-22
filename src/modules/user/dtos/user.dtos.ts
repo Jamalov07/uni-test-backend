@@ -1,17 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	SignInTokenDefinition,
 	UserCreateRequest,
+	UserCreateWithInfoRequest,
 	UserDeleteRequest,
 	UserFindAllRequest,
 	UserFindAllResponse,
 	UserFindFullRequest,
 	UserFindOneRequest,
 	UserFindOneResponse,
+	UserSignInRequest,
+	UserSignInResponse,
 	UserUpdateRequest,
 } from '../interfaces'
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID } from 'class-validator'
 import { $Enums } from '@prisma/client'
-import { UserInfoFindOneResponse, UserInfoFindOneResponseDto } from '../../user-info'
+import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoFindOneResponseDto, UserInfoWithOutUserIdDto } from '../../user-info'
 
 export class UserFindFullRequestDto implements UserFindFullRequest {
 	@ApiPropertyOptional({ example: 'jn@gmail.com' })
@@ -64,6 +68,16 @@ export class UserFindOneRequestDto implements UserFindOneRequest {
 	id: string
 }
 
+export class UserSignInRequestDto implements UserSignInRequest {
+	@IsString()
+	@IsNotEmpty()
+	hemisId: string
+
+	@IsString()
+	@IsNotEmpty()
+	password: string
+}
+
 export class UserCreateRequestDto implements UserCreateRequest {
 	@ApiProperty({ example: 'fullName' })
 	@IsString()
@@ -72,8 +86,8 @@ export class UserCreateRequestDto implements UserCreateRequest {
 
 	@ApiProperty({ example: 'jn@gmail.com' })
 	@IsEmail()
-	@IsNotEmpty()
-	emailAddress: string
+	@IsOptional()
+	emailAddress?: string
 
 	@ApiProperty({ example: '12345' })
 	@IsString()
@@ -84,6 +98,33 @@ export class UserCreateRequestDto implements UserCreateRequest {
 	@IsEnum($Enums.UserType)
 	@IsNotEmpty()
 	type: $Enums.UserType
+}
+
+export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
+	@ApiProperty({ example: 'fullName' })
+	@IsString()
+	@IsNotEmpty()
+	fullName: string
+
+	@ApiProperty({ example: 'jn@gmail.com' })
+	@IsEmail()
+	@IsOptional()
+	emailAddress?: string
+
+	@ApiProperty({ example: '12345' })
+	@IsString()
+	@IsNotEmpty()
+	password: string
+
+	@ApiProperty({ example: 'student' })
+	@IsEnum($Enums.UserType)
+	@IsNotEmpty()
+	type: $Enums.UserType
+
+	@ApiProperty({ type: UserInfoWithOutUserIdDto })
+	@IsObject()
+	@IsNotEmpty()
+	userInfo: Omit<UserInfoCreateRequest, 'userId'>
 }
 
 export class UserUpdateRequestDto implements UserUpdateRequest {
@@ -175,4 +216,23 @@ export class UserFindAllResponseDto implements UserFindAllResponse {
 
 	@ApiProperty({ type: UserFindOneResponseDto, isArray: true })
 	data: UserFindOneResponse[]
+}
+
+export class SignInTokenDefinitionDto implements SignInTokenDefinition {
+	@ApiProperty({ example: 'eyjtgfgf....' })
+	accessToken: string
+
+	@ApiProperty({ example: 'eyjtgfgf....' })
+	refreshToken: string
+}
+
+export class UserSignInResponseDto implements UserSignInResponse {
+	@ApiProperty({ type: UserFindOneResponseDto })
+	user: UserFindOneResponse
+
+	@ApiProperty({ type: UserInfoFindOneResponseDto })
+	userInfo: UserInfoFindOneResponse
+
+	@ApiProperty({ type: SignInTokenDefinitionDto })
+	tokens: SignInTokenDefinition
 }

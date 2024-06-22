@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import { UserInfoRepository } from './user-info.repository'
 import {
 	UserInfoCreateRequest,
@@ -48,13 +48,31 @@ export class UserInfoService {
 		return userInfo
 	}
 
+	async findOneByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+		const userInfo = await this.repository.findOneByHemisId({ hemisId: payload.hemisId })
+		if (!userInfo) {
+			throw new UnauthorizedException('User not found')
+		}
+		return userInfo
+	}
+
+	async findByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+		const userInfo = await this.repository.findOneByHemisId({ hemisId: payload.hemisId })
+		if (userInfo) {
+			throw new UnauthorizedException('UserInfo with this hemisId already exists')
+		}
+		return userInfo
+	}
+
 	async create(payload: UserInfoCreateRequest): Promise<UserInfoCreateResponse> {
+		await this.findByHemisId({ hemisId: payload.hemisId })
 		await this.findOneByUser({ userId: payload.userId })
 		return this.repository.create(payload)
 	}
 
 	async update(params: UserInfoFindOneRequest, payload: UserInfoUpdateRequest): Promise<UserInfoUpdateResponse> {
 		await this.findOne({ id: params.id })
+		await this.findByHemisId({ hemisId: payload.hemisId })
 		payload.userId ? await this.findOneByUser({ userId: payload.userId }) : null
 
 		await this.repository.update({ ...params, ...payload })

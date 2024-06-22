@@ -1,9 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserRepository } from './user.repository'
 import {
+	SignInTokenDefinition,
 	UserCreateRequest,
 	UserCreateResponse,
+	UserCreateWithInfoRequest,
 	UserDeleteRequest,
 	UserDeleteResponse,
 	UserFindAllRequest,
@@ -12,15 +14,24 @@ import {
 	UserFindFullResponse,
 	UserFindOneRequest,
 	UserFindOneResponse,
+	UserSignInRequest,
+	UserSignInResponse,
 	UserUpdateRequest,
 	UserUpdateResponse,
 } from './interfaces'
+import { UserInfoService } from '../user-info'
+import { JwtService } from '@nestjs/jwt'
+import { JwtConfig } from '../../configs'
 
 @Injectable()
 export class UserService {
 	private readonly repository: UserRepository
-	constructor(repository: UserRepository) {
+	private readonly jwtService: JwtService
+	private readonly userInfoService: UserInfoService
+	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JwtService) {
 		this.repository = repository
+		this.jwtService = jwtService
+		this.userInfoService = userInfoService
 	}
 
 	async findFull(payload: UserFindFullRequest): Promise<UserFindFullResponse> {
@@ -49,10 +60,31 @@ export class UserService {
 		return user
 	}
 
+	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
+		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
+		const user = await this.repository.findOneWithPassword({ id: userInfo.user.id })
+
+		const isCorrect = await bcrypt.compare(payload.password, user.password)
+		if (!isCorrect) {
+			throw new UnauthorizedException('User not found')
+		}
+
+		const tokens = await this.getTokens({ id: user.id })
+
+		return { user: user, userInfo: userInfo, tokens: tokens }
+	}
+
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		const password = await bcrypt.hash(payload.password, 7)
 		await this.findOneByEmail({ emailAddress: payload.emailAddress })
 		return this.repository.create({ ...payload, password })
+	}
+
+	async createWithUserInfo(payload: UserCreateWithInfoRequest): Promise<UserCreateResponse> {
+		const userId = await this.repository.createWithReturningId(payload)
+		await this.userInfoService.create({ ...payload.userInfo, userId: userId })
+
+		return null
 	}
 
 	async update(params: UserFindOneRequest, payload: UserUpdateRequest): Promise<UserUpdateResponse> {
@@ -67,5 +99,21 @@ export class UserService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async getTokens(payload: Partial<UserFindOneResponse>): Promise<SignInTokenDefinition> {
+		console.log(JwtConfig)
+		const [access, refresh] = await Promise.all([
+			this.jwtService.signAsync(payload, {
+				secret: JwtConfig.accessToken.key,
+				expiresIn: JwtConfig.accessToken.time,
+			}),
+			this.jwtService.signAsync(payload, {
+				secret: JwtConfig.refreshToken.key,
+				expiresIn: JwtConfig.refreshToken.time,
+			}),
+		])
+
+		return { accessToken: access, refreshToken: refresh }
 	}
 }

@@ -90,6 +90,20 @@ export class UserInfoRepository {
 		return userInfo
 	}
 
+	async findOneByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+		const userInfo = await this.prisma.userInfo.findFirst({
+			where: { hemisId: payload.hemisId },
+			select: {
+				id: true,
+				user: { select: { id: true, image: true, type: true, fullName: true, emailAddress: true, createdAt: true } },
+				createdAt: true,
+				hemisId: true,
+				group: { select: { id: true, name: true, createdAt: true } },
+			},
+		})
+		return userInfo
+	}
+
 	async findByUser(payload: { userId: string }): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.prisma.userInfo.findFirst({
 			where: { userId: payload.userId, deletedAt: null },
