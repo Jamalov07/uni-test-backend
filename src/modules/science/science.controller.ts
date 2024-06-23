@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { ScienceCreateResponse, ScienceDeleteResponse, ScienceFindAllResponse, ScienceFindFullResponse, ScienceFindOneResponse, ScienceUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Science')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('science')
 export class ScienceController {
 	private readonly service: ScienceService

@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { AnswerCreateResponse, AnswerDeleteResponse, AnswerFindAllResponse, AnswerFindFullResponse, AnswerFindOneResponse, AnswerUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Answer')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('answer')
 export class AnswerController {
 	private readonly service: AnswerService

@@ -25,11 +25,11 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Question')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('question')
 export class QuestionController {
 	private readonly service: QuestionService

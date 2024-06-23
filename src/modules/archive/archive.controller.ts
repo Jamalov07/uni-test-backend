@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, ArchiveFindFullResponse, ArchiveFindOneResponse, ArchiveUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Archive')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('archive')
 export class ArchiveController {
 	private readonly service: ArchiveService

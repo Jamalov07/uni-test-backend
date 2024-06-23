@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { CourseCreateResponse, CourseDeleteResponse, CourseFindAllResponse, CourseFindFullResponse, CourseFindOneResponse, CourseUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Course')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('course')
 export class CourseController {
 	private readonly service: CourseService

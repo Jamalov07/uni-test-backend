@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { FacultyCreateResponse, FacultyDeleteResponse, FacultyFindAllResponse, FacultyFindFullResponse, FacultyFindOneResponse, FacultyUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Faculty')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('faculty')
 export class FacultyController {
 	private readonly service: FacultyService

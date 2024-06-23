@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { GroupCreateResponse, GroupDeleteResponse, GroupFindAllResponse, GroupFindFullResponse, GroupFindOneResponse, GroupUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Group')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('group')
 export class GroupController {
 	private readonly service: GroupService

@@ -6,7 +6,7 @@ import { JwtConfig } from '../configs'
 import { isUUID } from 'class-validator'
 
 @Injectable()
-export class CheckAccessGuard implements CanActivate {
+export class CheckAuthGuard implements CanActivate {
 	private readonly jwtService: JwtService
 	private readonly prismaService: PrismaService
 	constructor(prismaService: PrismaService, jwtService: JwtService) {

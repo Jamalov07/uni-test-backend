@@ -14,11 +14,11 @@ import {
 } from './dtos'
 import { UserInfoCreateResponse, UserInfoDeleteResponse, UserInfoFindAllResponse, UserInfoFindFullResponse, UserInfoFindOneResponse, UserInfoUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('UserInfo')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('user-info')
 export class UserInfoController {
 	private readonly service: UserInfoService

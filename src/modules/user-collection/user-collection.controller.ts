@@ -21,11 +21,11 @@ import {
 	UserCollectionUpdateResponse,
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
-import { CheckAccessGuard } from '../../guards'
+import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('UserCollection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
-@UseGuards(CheckAccessGuard)
+@UseGuards(CheckAuthGuard)
 @Controller('user-collection')
 export class UserCollectionController {
 	private readonly service: UserCollectionService
