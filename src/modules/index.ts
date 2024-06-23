@@ -1,7 +1,7 @@
 //prisma
 export * from './prisma'
 //modules
-export * from './collection'
+export * from './collection' // buni bitta pastga tushirsa error :)
 export * from './answer'
 export * from './archive'
 export * from './course'
