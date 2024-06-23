@@ -1,16 +1,20 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { CanActivate, ExecutionContext, Injectable, MethodNotAllowedException, UnauthorizedException } from '@nestjs/common'
 import { Request } from 'express'
 import { PrismaService } from '../modules'
 import { JwtService } from '@nestjs/jwt'
 import { JwtConfig } from '../configs'
 import { isUUID } from 'class-validator'
+import { Reflector } from '@nestjs/core'
+import { ROLES_KEY } from '../constants'
 
 @Injectable()
 export class CheckAuthGuard implements CanActivate {
 	private readonly jwtService: JwtService
 	private readonly prismaService: PrismaService
-	constructor(prismaService: PrismaService, jwtService: JwtService) {
+	private readonly reflector: Reflector
+	constructor(prismaService: PrismaService, jwtService: JwtService, reflector: Reflector) {
 		this.jwtService = jwtService
+		this.reflector = reflector
 		this.prismaService = prismaService
 	}
 
@@ -46,6 +50,12 @@ export class CheckAuthGuard implements CanActivate {
 		const userData = await this.prismaService.user.findFirst({ where: { id: user?.id, deletedAt: null } })
 		if (!userData) {
 			throw new UnauthorizedException('User not found')
+		}
+		const requiredRoles = this.reflector.get<string[]>(ROLES_KEY, context.getHandler())
+		if (requiredRoles && requiredRoles.length) {
+			if (!requiredRoles.includes(userData.type)) {
+				throw new MethodNotAllowedException('You are not allowed')
+			}
 		}
 		return true
 	}

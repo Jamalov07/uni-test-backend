@@ -15,6 +15,7 @@ import {
 import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, ArchiveFindFullResponse, ArchiveFindOneResponse, ArchiveUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { Roles } from '../../decorators'
 
 @ApiTags('Archive')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -28,6 +29,7 @@ export class ArchiveController {
 	}
 
 	@Get('full')
+	@Roles('admin', 'student')
 	@ApiResponse({ type: ArchiveFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: ArchiveFindFullRequestDto): Promise<ArchiveFindFullResponse> {
 		return this.service.findFull(payload)
