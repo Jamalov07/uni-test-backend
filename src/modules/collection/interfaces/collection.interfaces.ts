@@ -63,6 +63,32 @@ export declare interface CollectionFindOneResponse {
 	createdAt: Date
 }
 
+export declare interface CollectionFindOneWithQuestionAnswers {
+	id: string
+	name: string
+	language: string
+	science?: ScienceFindOneResponse
+	maxAttempts: number
+	givenMinutes: number
+	amountInTest: number
+	createdAt: Date
+	questions: CollectionQuestion[]
+}
+
+export declare interface CollectionQuestion {
+	id: string
+	text: string
+	createdAt: Date
+	answers: QuestionAnswer[]
+}
+
+export declare interface QuestionAnswer {
+	id: string
+	text: string
+	isCorrect: boolean
+	createdAt: Date
+}
+
 export declare type CollectionCreateResponse = null
 
 export declare type CollectionUpdateResponse = null

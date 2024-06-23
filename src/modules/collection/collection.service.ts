@@ -11,6 +11,7 @@ import {
 	CollectionFindFullResponse,
 	CollectionFindOneRequest,
 	CollectionFindOneResponse,
+	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateRequest,
 	CollectionUpdateResponse,
 } from './interfaces'
@@ -41,6 +42,29 @@ export class CollectionService {
 			throw new BadRequestException('Collection not found')
 		}
 		return collection
+	}
+
+	async findOneWithQuestionAnswers(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+		const collection = await this.repository.findOneWithQuestionAnswers(payload)
+		if (!collection) {
+			throw new BadRequestException('Collection not found')
+		}
+		return collection
+	}
+
+	async findOneAndReturnTxt(payload: CollectionFindOneRequest): Promise<{ filename: string; content: string }> {
+		const collection = await this.repository.findOneWithQuestionAnswers(payload)
+
+		let content = ''
+		collection.questions.forEach((q) => {
+			content = content + `S: ${q.text}\n`
+			q.answers.forEach((a) => {
+				content = content + `J: ${a.text}${a.isCorrect ? '+' : ''}\n`
+			})
+			content = content + '\n'
+		})
+
+		return { filename: collection.name, content: content }
 	}
 
 	async findOneByName(payload: Partial<CollectionFindOneResponse>): Promise<CollectionFindOneResponse> {

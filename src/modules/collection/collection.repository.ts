@@ -11,6 +11,7 @@ import {
 	CollectionFindFullResponse,
 	CollectionFindOneRequest,
 	CollectionFindOneResponse,
+	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateRequest,
 } from './interfaces'
 
@@ -117,6 +118,39 @@ export class CollectionRepository {
 				science: { select: { id: true, name: true, createdAt: true } },
 			},
 		})
+		return collection
+	}
+
+	async findOneWithQuestionAnswers(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+		const collection = await this.prisma.collection.findFirst({
+			where: { id: payload.id, deletedAt: null },
+			select: {
+				id: true,
+				name: true,
+				language: true,
+				amountInTest: true,
+				givenMinutes: true,
+				maxAttempts: true,
+				science: { select: { id: true, name: true, createdAt: true } },
+				createdAt: true,
+				questions: {
+					select: {
+						id: true,
+						text: true,
+						createdAt: true,
+						answers: {
+							select: {
+								id: true,
+								text: true,
+								isCorrect: true,
+								createdAt: true,
+							},
+						},
+					},
+				},
+			},
+		})
+
 		return collection
 	}
 

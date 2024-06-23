@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CollectionService } from './collection.service'
 import {
@@ -18,12 +18,14 @@ import {
 	CollectionFindAllResponse,
 	CollectionFindFullResponse,
 	CollectionFindOneResponse,
+	CollectionFindOneWithQuestionAnswers,
 	CollectionUpdateResponse,
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
+import { Response } from 'express'
 
 @ApiTags('Collection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -46,6 +48,22 @@ export class CollectionController {
 	@ApiResponse({ type: CollectionFindAllResponseDto })
 	findAll(@Query() payload: CollectionFindAllRequestDto): Promise<CollectionFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
+	}
+
+	@Get(':id/with-question')
+	@ApiResponse({ type: CollectionFindOneResponseDto })
+	findOneWithQuestionAnswers(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneWithQuestionAnswers> {
+		return this.service.findOneWithQuestionAnswers(payload)
+	}
+
+	@Get(':id/in-txt')
+	@ApiResponse({ type: null })
+	async findOneInTxt(@Param() payload: CollectionFindOneRequestDto, @Res() response: Response): Promise<void> {
+		const collection = await this.service.findOneAndReturnTxt(payload)
+
+		response.setHeader('Content-Disposition', `attachment; filename=${collection.filename}.txt`)
+		response.setHeader('Content-Type', 'text/plain')
+		response.send(collection.content)
 	}
 
 	@Get(':id')
