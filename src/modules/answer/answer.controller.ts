@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AnswerService } from './answer.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { AnswerCreateResponse, AnswerDeleteResponse, AnswerFindAllResponse, AnswerFindFullResponse, AnswerFindOneResponse, AnswerUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Answer')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('answer')
 export class AnswerController {
 	private readonly service: AnswerService

@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import * as bcrypt from 'bcrypt'
 import { UserRepository } from './user.repository'
 import {
-	SignInTokenDefinition,
 	UserCreateRequest,
 	UserCreateResponse,
 	UserCreateWithInfoRequest,
@@ -20,15 +19,14 @@ import {
 	UserUpdateResponse,
 } from './interfaces'
 import { UserInfoService } from '../user-info'
-import { JwtService } from '@nestjs/jwt'
-import { JwtConfig } from '../../configs'
+import { JWTService } from '../jwt'
 
 @Injectable()
 export class UserService {
 	private readonly repository: UserRepository
-	private readonly jwtService: JwtService
+	private readonly jwtService: JWTService
 	private readonly userInfoService: UserInfoService
-	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JwtService) {
+	constructor(repository: UserRepository, userInfoService: UserInfoService, jwtService: JWTService) {
 		this.repository = repository
 		this.jwtService = jwtService
 		this.userInfoService = userInfoService
@@ -69,7 +67,7 @@ export class UserService {
 			throw new UnauthorizedException('User not found')
 		}
 
-		const tokens = await this.getTokens({ id: user.id })
+		const tokens = await this.jwtService.getTokens({ id: user.id })
 
 		return { user: user, userInfo: userInfo, tokens: tokens }
 	}
@@ -99,21 +97,5 @@ export class UserService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
-	}
-
-	async getTokens(payload: Partial<UserFindOneResponse>): Promise<SignInTokenDefinition> {
-		console.log(JwtConfig)
-		const [access, refresh] = await Promise.all([
-			this.jwtService.signAsync(payload, {
-				secret: JwtConfig.accessToken.key,
-				expiresIn: JwtConfig.accessToken.time,
-			}),
-			this.jwtService.signAsync(payload, {
-				secret: JwtConfig.refreshToken.key,
-				expiresIn: JwtConfig.refreshToken.time,
-			}),
-		])
-
-		return { accessToken: access, refreshToken: refresh }
 	}
 }

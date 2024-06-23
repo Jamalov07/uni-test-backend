@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { GroupService } from './group.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { GroupCreateResponse, GroupDeleteResponse, GroupFindAllResponse, GroupFindFullResponse, GroupFindOneResponse, GroupUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Group')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('group')
 export class GroupController {
 	private readonly service: GroupService

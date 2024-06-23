@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserCollectionService } from './user-collection.service'
 import {
@@ -21,9 +21,11 @@ import {
 	UserCollectionUpdateResponse,
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('UserCollection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('user-collection')
 export class UserCollectionController {
 	private readonly service: UserCollectionService

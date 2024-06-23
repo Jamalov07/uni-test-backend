@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FacultyService } from './faculty.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { FacultyCreateResponse, FacultyDeleteResponse, FacultyFindAllResponse, FacultyFindFullResponse, FacultyFindOneResponse, FacultyUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Faculty')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('faculty')
 export class FacultyController {
 	private readonly service: FacultyService

@@ -1,5 +1,7 @@
 //prisma
 export * from './prisma'
+//jwt
+export * from './jwt'
 //modules
 export * from './collection' // buni bitta pastga tushirsa error :)
 export * from './answer'

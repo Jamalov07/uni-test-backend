@@ -7,6 +7,7 @@ import {
 	CourseModule,
 	FacultyModule,
 	GroupModule,
+	JWTModule,
 	PrismaModule,
 	QuestionModule,
 	ScienceModule,
@@ -15,13 +16,12 @@ import {
 	UserModule,
 } from './modules'
 import { databaseConfig } from './configs'
-import { JwtModule } from '@nestjs/jwt'
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, load: [databaseConfig] }),
-		JwtModule.register({ global: true }),
 		PrismaModule,
+		JWTModule,
 		CourseModule,
 		FacultyModule,
 		ScienceModule,

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ArchiveService } from './archive.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, ArchiveFindFullResponse, ArchiveFindOneResponse, ArchiveUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Archive')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('archive')
 export class ArchiveController {
 	private readonly service: ArchiveService

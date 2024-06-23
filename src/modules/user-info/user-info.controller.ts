@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserInfoService } from './user-info.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { UserInfoCreateResponse, UserInfoDeleteResponse, UserInfoFindAllResponse, UserInfoFindFullResponse, UserInfoFindOneResponse, UserInfoUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('UserInfo')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('user-info')
 export class UserInfoController {
 	private readonly service: UserInfoService

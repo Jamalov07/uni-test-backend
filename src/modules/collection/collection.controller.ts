@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CollectionService } from './collection.service'
 import {
@@ -23,9 +23,11 @@ import {
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UploadedTxtFile } from '../../interfaces'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Collection')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('collection')
 export class CollectionController {
 	private readonly service: CollectionService

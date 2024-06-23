@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
@@ -17,9 +17,11 @@ import {
 } from './dtos'
 import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('User')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('user')
 export class UserController {
 	private readonly service: UserService

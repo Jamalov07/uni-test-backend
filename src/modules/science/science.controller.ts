@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ScienceService } from './science.service'
 import {
@@ -14,9 +14,11 @@ import {
 } from './dtos'
 import { ScienceCreateResponse, ScienceDeleteResponse, ScienceFindAllResponse, ScienceFindFullResponse, ScienceFindOneResponse, ScienceUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
+import { CheckAccessGuard } from '../../guards'
 
 @ApiTags('Science')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
+@UseGuards(CheckAccessGuard)
 @Controller('science')
 export class ScienceController {
 	private readonly service: ScienceService
