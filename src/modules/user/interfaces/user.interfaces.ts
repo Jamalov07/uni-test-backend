@@ -81,7 +81,7 @@ export declare interface UserFindOneResponse {
 
 export declare interface UserSignInResponse {
 	user: UserFindOneResponse
-	userInfo: UserInfoFindOneResponse
+	userInfo?: UserInfoFindOneResponse
 	tokens: SignInTokenDefinition
 }
 

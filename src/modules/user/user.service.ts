@@ -70,7 +70,11 @@ export class UserService {
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })
 
-		return { user: user, userInfo: userInfo, tokens: tokens }
+		let response: UserSignInResponse = { user: user, tokens: tokens }
+		if (user.type === 'stunent') {
+			response = { ...response, userInfo: userInfo }
+		}
+		return response
 	}
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
