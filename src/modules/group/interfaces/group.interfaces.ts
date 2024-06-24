@@ -1,9 +1,11 @@
 import { CourseFindOneResponse } from '../../course'
 import { FacultyFindOneResponse } from '../../faculty'
+import { SemestrFindOneResponse } from '../../semestr'
 
 export declare interface GroupFindFullRequest {
 	courseId?: string
 	facultyId?: string
+	semestrId?: string
 }
 
 export declare interface GroupFindAllRequest {
@@ -11,6 +13,7 @@ export declare interface GroupFindAllRequest {
 	pageSize?: number
 	courseId?: string
 	facultyId?: string
+	semestrId?: string
 }
 
 export declare interface GroupFindOneRequest {
@@ -21,12 +24,14 @@ export declare interface GroupCreateRequest {
 	name: string
 	courseId: string
 	facultyId: string
+	semestrId: string
 }
 
 export declare interface GroupUpdateRequest {
 	name?: string
 	courseId?: string
 	facultyId?: string
+	semestrId?: string
 }
 
 export declare interface GroupDeleteRequest {
@@ -49,6 +54,7 @@ export declare interface GroupFindOneResponse {
 	name: string
 	course?: CourseFindOneResponse
 	faculty?: FacultyFindOneResponse
+	semestr?: SemestrFindOneResponse
 	createdAt: Date
 }
 

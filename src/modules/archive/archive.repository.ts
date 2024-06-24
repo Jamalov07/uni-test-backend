@@ -54,6 +54,7 @@ export class ArchiveRepository {
 				course: { select: { id: true, stage: true, createdAt: true } },
 				faculty: { select: { id: true, name: true, createdAt: true } },
 				group: { select: { id: true, name: true, createdAt: true } },
+				semestr: { select: { id: true, stage: true, createdAt: true } },
 				result: true,
 				testCount: true,
 				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
@@ -94,6 +95,7 @@ export class ArchiveRepository {
 				group: { select: { id: true, name: true, createdAt: true } },
 				result: true,
 				testCount: true,
+				semestr: { select: { id: true, stage: true, createdAt: true } },
 				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
 				createdAt: true,
 			},
@@ -135,6 +137,7 @@ export class ArchiveRepository {
 					},
 				},
 				course: { select: { id: true, stage: true, createdAt: true } },
+				semestr: { select: { id: true, stage: true, createdAt: true } },
 				faculty: { select: { id: true, name: true, createdAt: true } },
 				group: { select: { id: true, name: true, createdAt: true } },
 				result: true,
@@ -159,6 +162,7 @@ export class ArchiveRepository {
 				courseId: user.userInfo.group.course.id,
 				facultyId: user.userInfo.group.faculty.id,
 				groupId: user.userInfo.group.id,
+				semestrId: user.userInfo?.group.semestr.id,
 			},
 		})
 

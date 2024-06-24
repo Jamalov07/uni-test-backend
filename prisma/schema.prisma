@@ -48,17 +48,33 @@ model Faculty {
   @@map("faculty")
 }
 
+model Semestr {
+  id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  stage      Int        @map("stage")       @db.Integer 
+  createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
+
+  groups    Group[] 
+  archives  Archive[]
+
+  @@id([ id ])
+  @@map("semestr")
+}
+
 
 model Group {
   id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
   name       String     @map("name")        @db.VarChar(255) 
   courseId   String     @map("course_id")   @db.Uuid
+  semestrId  String     @map("semestr_id")  @db.Uuid          
   facultyId  String     @map("faculty_id")  @db.Uuid
   createdAt  DateTime   @map("created_at")  @db.Timestamp     @default(now())
   updatedAt  DateTime   @map("updated_at")  @db.Timestamp     @updatedAt
   deletedAt  DateTime?  @map("deleted_at")  @db.Timestamp
 
   course   Course   @relation(fields: [ courseId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  semestr  Semestr  @relation(fields: [ semestrId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   faculty  Faculty  @relation(fields: [ facultyId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
 
   archives    Archive[]
@@ -181,7 +197,8 @@ model Archive {
   result        Int        @map("result")         @db.Integer 
   userId        String     @map("user_id")        @db.Uuid 
   groupId       String     @map("group_id")       @db.Uuid 
-  courseId      String     @map("course_id")      @db.Uuid 
+  courseId      String     @map("course_id")      @db.Uuid
+  semestrId     String     @map("semestr_id")     @db.Uuid    
   testCount     Int        @map("test_count")     @db.Integer 
   facultyId     String     @map("faculty_id")     @db.Uuid 
   collectionId  String     @map("collection_id")  @db.Uuid 
@@ -192,6 +209,7 @@ model Archive {
   user        User        @relation(fields: [ userId       ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   group       Group       @relation(fields: [ groupId      ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   course      Course      @relation(fields: [ courseId     ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  semestr     Semestr     @relation(fields: [ semestrId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   faculty     Faculty     @relation(fields: [ facultyId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
   collection  Collection  @relation(fields: [ collectionId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
 
