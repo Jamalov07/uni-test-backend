@@ -65,7 +65,7 @@ export class UserService {
 
 		const isCorrect = await bcrypt.compare(payload.password, user.password)
 		if (!isCorrect) {
-			throw new UnauthorizedException('User not found')
+			throw new UnauthorizedException('User1 not found')
 		}
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })

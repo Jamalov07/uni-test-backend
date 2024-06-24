@@ -18,6 +18,7 @@ import { FacultyFindOneResponse } from '../faculty'
 import { CourseFindOneResponse } from '../course'
 import { SemestrFindOneResponse } from '../semestr'
 import { GroupFindOneResponse } from '../group'
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UserRepository {
@@ -156,14 +157,7 @@ export class UserRepository {
 	}
 
 	async createWithJsonFile(payload: UserCreateWithJsonFileRequest[]): Promise<null> {
-		// 	full_name: string
-		// faculty: string
-		// course: string
-		// group: string
-		// image: string
-		// hemis_id: string
-		// password: string
-		// semestr: string
+		
 
 		const promises: any[] = []
 
@@ -179,9 +173,7 @@ export class UserRepository {
 		for (const u of payload) {
 			//faculty
 			let faculty: FacultyFindOneResponse
-			console.log(facultyNames, u.faculty)
 			if (facultyNames.includes(u.faculty)) {
-				console.log('ha')
 				faculty = faculties.find((f) => f.name == u.faculty)
 			} else {
 				faculty = await this.prisma.faculty.findFirst({ where: { name: u.faculty, deletedAt: null } })
@@ -190,7 +182,6 @@ export class UserRepository {
 				}
 				facultyNames.push(faculty.name)
 				faculties.push(faculty)
-				console.log(facultyNames)
 			}
 
 			//course
@@ -263,7 +254,7 @@ export class UserRepository {
 					data: {
 						fullName: u.full_name,
 						image: u.image,
-						password: u.password,
+						password: await bcrypt.hash(u.password, 7),
 						type: 'student',
 					},
 				})

@@ -84,7 +84,6 @@ export class UserController {
 		const data = file.buffer.toString('utf8')
 		const jsonData: UserCreateManyWithJsonFileDto[] = JSON.parse(data)
 
-		console.log(jsonData)
 		return this.service.createManyWithJsonFile(jsonData)
 	}
 
