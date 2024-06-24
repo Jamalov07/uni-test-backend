@@ -69,10 +69,12 @@ export class UserFindOneRequestDto implements UserFindOneRequest {
 }
 
 export class UserSignInRequestDto implements UserSignInRequest {
+	@ApiProperty({ example: 'hemisid' })
 	@IsString()
 	@IsNotEmpty()
 	hemisId: string
 
+	@ApiProperty({ example: 'password' })
 	@IsString()
 	@IsNotEmpty()
 	password: string
