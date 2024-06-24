@@ -19,7 +19,7 @@ import { CheckAuthGuard } from '../../guards'
 @ApiTags('Semestr')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
-@Controller('course')
+@Controller('semestr')
 export class SemestrController {
 	private readonly service: SemestrService
 
