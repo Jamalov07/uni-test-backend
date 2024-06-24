@@ -11,6 +11,7 @@ import {
 	PrismaModule,
 	QuestionModule,
 	ScienceModule,
+	SemestrModule,
 	UserCollectionModule,
 	UserInfoModule,
 	UserModule,
@@ -33,6 +34,7 @@ import { databaseConfig } from './configs'
 		AnswerModule,
 		UserCollectionModule,
 		ArchiveModule,
+		SemestrModule,
 	],
 })
 export class AppModule {}
