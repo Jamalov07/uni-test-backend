@@ -5,6 +5,7 @@ import {
 	UserCreateRequest,
 	UserCreateResponse,
 	UserCreateWithInfoRequest,
+	UserCreateWithJsonFileRequest,
 	UserDeleteRequest,
 	UserDeleteResponse,
 	UserFindAllRequest,
@@ -83,6 +84,22 @@ export class UserService {
 		payload.userInfo ? await this.userInfoService.create({ ...payload.userInfo, userId: userId }) : null
 
 		return null
+	}
+
+	async createManyWithJsonFile(payload: UserCreateWithJsonFileRequest[]): Promise<null> {
+		const mappedPayload = payload.map((p) => {
+			return {
+				full_name: p.full_name,
+				faculty: p.faculty,
+				course: Number(p.course),
+				group: p.group,
+				image: p.image,
+				hemis_id: p.hemis_id,
+				password: p.password,
+				semestr: Number(p.semestr),
+			}
+		})
+		return this.repository.createWithJsonFile(mappedPayload)
 	}
 
 	async update(params: UserFindOneRequest, payload: UserUpdateRequest): Promise<UserUpdateResponse> {

@@ -12,10 +12,12 @@ import {
 	UserSignInRequest,
 	UserSignInResponse,
 	UserUpdateRequest,
+	UserCreateWithJsonFileRequest,
 } from '../interfaces'
 import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID } from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoFindOneResponseDto, UserInfoWithOutUserIdDto } from '../../user-info'
+import { Type } from 'class-transformer'
 
 export class UserFindFullRequestDto implements UserFindFullRequest {
 	@ApiPropertyOptional({ example: 'jn@gmail.com' })
@@ -96,6 +98,11 @@ export class UserCreateRequestDto implements UserCreateRequest {
 	@IsNotEmpty()
 	password: string
 
+	@ApiProperty({ example: 'link' })
+	@IsString()
+	@IsNotEmpty()
+	image: string
+
 	@ApiProperty({ example: 'student' })
 	@IsEnum($Enums.UserType)
 	@IsNotEmpty()
@@ -123,10 +130,51 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 	@IsNotEmpty()
 	type: $Enums.UserType
 
+	@ApiProperty({ example: 'link' })
+	@IsString()
+	@IsNotEmpty()
+	image: string
+
 	@ApiPropertyOptional({ type: UserInfoWithOutUserIdDto })
 	@IsObject()
 	@IsOptional()
 	userInfo?: Omit<UserInfoCreateRequest, 'userId'>
+}
+
+export class UserCreateManyWithJsonFileDto implements UserCreateWithJsonFileRequest {
+	@IsString()
+	@IsNotEmpty()
+	full_name: string
+
+	@IsString()
+	@IsNotEmpty()
+	password: string
+
+	@IsString()
+	@IsNotEmpty()
+	image: string
+
+	@IsNumber()
+	@IsNotEmpty()
+	@Type(() => Number)
+	course: number
+
+	@IsString()
+	@IsNotEmpty()
+	faculty: string
+
+	@IsString()
+	@IsNotEmpty()
+	group: string
+
+	@IsString()
+	@IsNotEmpty()
+	hemis_id: string
+
+	@IsNumber()
+	@IsNotEmpty()
+	@Type(() => Number)
+	semestr: number
 }
 
 export class UserUpdateRequestDto implements UserUpdateRequest {
@@ -144,6 +192,11 @@ export class UserUpdateRequestDto implements UserUpdateRequest {
 	@IsString()
 	@IsOptional()
 	password?: string
+
+	@ApiPropertyOptional({ example: 'link' })
+	@IsString()
+	@IsOptional()
+	image?: string
 
 	@ApiPropertyOptional({ example: 'student' })
 	@IsEnum($Enums.UserType)

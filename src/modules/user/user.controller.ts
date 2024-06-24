@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
@@ -14,10 +14,12 @@ import {
 	UserSignInRequestDto,
 	UserSignInResponseDto,
 	UserCreateWithInfoRequestDto,
+	UserCreateManyWithJsonFileDto,
 } from './dtos'
 import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('User')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -64,6 +66,26 @@ export class UserController {
 	@ApiResponse({ type: UserSignInResponseDto })
 	signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
 		return this.service.singIn(payload)
+	}
+
+	@Post('with-json')
+	@UseInterceptors(
+		FileInterceptor('file', {
+			fileFilter: (req, file, cb) => {
+				if (file.mimetype !== 'application/json') {
+					return cb(new BadRequestException('Invalid file type'), false)
+				}
+				cb(null, true)
+			},
+		}),
+	)
+	@ApiResponse({ type: null })
+	createManyWithJson(@UploadedFile() file: any): Promise<null> {
+		const data = file.buffer.toString('utf8')
+		const jsonData: UserCreateManyWithJsonFileDto[] = JSON.parse(data)
+
+		console.log(jsonData)
+		return this.service.createManyWithJsonFile(jsonData)
 	}
 
 	@Patch(':id')

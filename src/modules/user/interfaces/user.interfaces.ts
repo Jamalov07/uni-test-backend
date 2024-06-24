@@ -26,7 +26,7 @@ export declare interface UserSignInRequest {
 
 export declare interface UserCreateRequest {
 	fullName: string
-	// image: string
+	image: string
 	type: UserType
 	password: string
 	emailAddress?: string
@@ -34,9 +34,20 @@ export declare interface UserCreateRequest {
 
 export declare type UserCreateWithInfoRequest = UserCreateRequest & { userInfo?: Omit<UserInfoCreateRequest, 'userId'> }
 
+export declare interface UserCreateWithJsonFileRequest {
+	full_name: string
+	faculty: string
+	course: number
+	group: string
+	image: string
+	hemis_id: string
+	password: string
+	semestr: number
+}
+
 export declare interface UserUpdateRequest {
 	fullName?: string
-	// image: string
+	image?: string
 	type?: UserType
 	password?: string
 	emailAddress?: string
