@@ -71,7 +71,7 @@ export class UserService {
 		const tokens = await this.jwtService.getTokens({ id: user.id })
 
 		let response: UserSignInResponse = { user: user, tokens: tokens }
-		if (user.type === 'stunent') {
+		if (user.type === 'student') {
 			response = { ...response, userInfo: userInfo }
 		}
 		return response

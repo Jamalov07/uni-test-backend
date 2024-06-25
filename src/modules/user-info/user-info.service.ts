@@ -59,7 +59,7 @@ export class UserInfoService {
 	async findByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.repository.findOneByHemisId({ hemisId: payload.hemisId })
 		if (userInfo) {
-			throw new UnauthorizedException('UserInfo with this hemisId already exists')
+			throw new BadRequestException('UserInfo with this hemisId already exists')
 		}
 		return userInfo
 	}

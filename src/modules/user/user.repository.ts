@@ -157,8 +157,6 @@ export class UserRepository {
 	}
 
 	async createWithJsonFile(payload: UserCreateWithJsonFileRequest[]): Promise<null> {
-		
-
 		const promises: any[] = []
 
 		const facultyNames: string[] = []
