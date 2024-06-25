@@ -21,6 +21,7 @@ import {
 } from './interfaces'
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
+// import { isEmail } from 'class-validator'
 
 @Injectable()
 export class UserService {
@@ -60,8 +61,26 @@ export class UserService {
 	}
 
 	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
+		let userId = ''
+
+		// const isemail = isEmail(payload.hemisId)
+		// if (isemail) {
+		// 	userId = (await this.findOneByEmail({ emailAddress: payload.hemisId })).id
+		// } else {
+		// 	userId = (await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })).user.id
+		// }
 		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
-		const user = await this.repository.findOneWithPassword({ id: userInfo.user.id })
+		if (!userInfo) {
+			const admin = await this.findOneByEmail({ emailAddress: payload.hemisId })
+			if (!admin) {
+				throw new UnauthorizedException('User not found')
+			} else {
+				userId = admin.id
+			}
+		} else {
+			userId = userInfo.user.id
+		}
+		const user = await this.repository.findOneWithPassword({ id: userId })
 
 		const isCorrect = await bcrypt.compare(payload.password, user.password)
 		if (!isCorrect) {
