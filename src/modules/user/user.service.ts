@@ -98,12 +98,14 @@ export class UserService {
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		const password = await bcrypt.hash(payload.password, 7)
-		await this.findOneByEmail({ emailAddress: payload.emailAddress })
+		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
 		return this.repository.create({ ...payload, password })
 	}
 
 	async createWithUserInfo(payload: UserCreateWithInfoRequest): Promise<UserCreateResponse> {
-		const userId = await this.repository.createWithReturningId(payload)
+		const password = await bcrypt.hash(payload.password, 7)
+		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
+		const userId = await this.repository.createWithReturningId({ ...payload, password: password })
 		payload.userInfo ? await this.userInfoService.create({ ...payload.userInfo, userId: userId }) : null
 
 		return null
