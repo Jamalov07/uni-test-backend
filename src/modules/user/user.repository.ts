@@ -146,14 +146,14 @@ export class UserRepository {
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {
 		await this.prisma.user.create({
-			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image },
+			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image ?? '' },
 		})
 		return null
 	}
 
 	async createWithReturningId(payload: UserCreateRequest): Promise<string> {
 		const user = await this.prisma.user.create({
-			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image },
+			data: { fullName: payload.fullName, emailAddress: payload.emailAddress, password: payload.password, type: payload.type, image: payload.image ?? '' },
 		})
 		return user.id
 	}
@@ -253,7 +253,7 @@ export class UserRepository {
 				.create({
 					data: {
 						fullName: u.full_name,
-						image: u.image,
+						image: u.image ?? '',
 						password: await bcrypt.hash(u.password, 7),
 						type: 'student',
 					},
