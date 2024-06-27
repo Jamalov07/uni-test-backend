@@ -21,7 +21,7 @@ import {
 } from './interfaces'
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
-// import { isEmail } from 'class-validator'
+import { isEmail } from 'class-validator'
 
 @Injectable()
 export class UserService {
@@ -60,26 +60,24 @@ export class UserService {
 		return user
 	}
 
+	async findByEmail(payload: Partial<UserFindOneResponse>): Promise<UserFindOneResponse> {
+		const user = await this.repository.findByEmail({ emailAddress: payload.emailAddress, id: payload.id })
+		return user
+	}
+
 	async singIn(payload: UserSignInRequest): Promise<UserSignInResponse> {
 		let userId = ''
 
-		// const isemail = isEmail(payload.hemisId)
-		// if (isemail) {
-		// 	userId = (await this.findOneByEmail({ emailAddress: payload.hemisId })).id
-		// } else {
-		// 	userId = (await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })).user.id
-		// }
-		const userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
-		if (!userInfo) {
-			const admin = await this.findOneByEmail({ emailAddress: payload.hemisId })
-			if (!admin) {
-				throw new UnauthorizedException('User not found')
-			} else {
-				userId = admin.id
-			}
+		let userInfo
+		const isemail = isEmail(payload.hemisId)
+		if (isemail) {
+			const admin = await this.findByEmail({ emailAddress: payload.hemisId })
+			userId = admin.id
 		} else {
+			userInfo = await this.userInfoService.findOneByHemisId({ hemisId: payload.hemisId })
 			userId = userInfo.user.id
 		}
+
 		const user = await this.repository.findOneWithPassword({ id: userId })
 
 		const isCorrect = await bcrypt.compare(payload.password, user.password)

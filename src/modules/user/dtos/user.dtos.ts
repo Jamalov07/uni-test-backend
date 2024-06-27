@@ -100,8 +100,8 @@ export class UserCreateRequestDto implements UserCreateRequest {
 
 	@ApiProperty({ example: 'link' })
 	@IsString()
-	@IsNotEmpty()
-	image: string
+	@IsOptional()
+	image?: string
 
 	@ApiProperty({ example: 'student' })
 	@IsEnum($Enums.UserType)
@@ -132,8 +132,8 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 
 	@ApiProperty({ example: 'link' })
 	@IsString()
-	@IsNotEmpty()
-	image: string
+	@IsOptional()
+	image?: string
 
 	@ApiPropertyOptional({ type: UserInfoWithOutUserIdDto })
 	@IsObject()

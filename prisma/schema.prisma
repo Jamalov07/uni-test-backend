@@ -100,7 +100,7 @@ model Science {
 
 model User {
   id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
-  image         String     @map("image")          @db.VarChar(255)
+  image         String     @map("image")          @db.VarChar(255)  @default("")
   type          UserType
   password      String     @map("password")       @db.VarChar(255)
   fullName      String     @map("full_name")      @db.VarChar(255) 

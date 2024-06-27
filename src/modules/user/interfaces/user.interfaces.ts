@@ -26,7 +26,7 @@ export declare interface UserSignInRequest {
 
 export declare interface UserCreateRequest {
 	fullName: string
-	image: string
+	image?: string
 	type: UserType
 	password: string
 	emailAddress?: string
