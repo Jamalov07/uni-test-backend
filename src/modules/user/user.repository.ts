@@ -123,10 +123,12 @@ export class UserRepository {
 								id: true,
 								course: { select: { id: true, stage: true, createdAt: true } },
 								faculty: { select: { id: true, name: true, createdAt: true } },
+								semestr: { select: { id: true, stage: true, createdAt: true } },
 								name: true,
 								createdAt: true,
 							},
 						},
+
 						id: true,
 						createdAt: true,
 					},
