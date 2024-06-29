@@ -25,6 +25,7 @@ import { join } from 'path'
 	imports: [
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, '..', 'images'),
+			serveRoot: '/uploads',
 		}),
 		ConfigModule.forRoot({ isGlobal: true, load: [databaseConfig] }),
 		PrismaModule,
