@@ -105,7 +105,7 @@ export class AdminController {
 	)
 	@ApiResponse({ type: null })
 	update(@Param() params: AdminFindOneRequestDto, @Body() payload: AdminUpdateRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<AdminUpdateResponse> {
-		const imagePath = image ? `/uploads/${image.filename}` : ''
+		const imagePath = image ? `/uploads/${image.filename}` : undefined
 		return this.service.update(params, { ...payload, image: imagePath })
 	}
 
