@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
@@ -20,6 +20,11 @@ import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFu
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { isEmail } from 'class-validator'
+import { AdminService } from '../admin'
+import { diskStorage } from 'multer'
+import { extname, join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
 
 @ApiTags('User')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -27,9 +32,11 @@ import { FileInterceptor } from '@nestjs/platform-express'
 @Controller('user')
 export class UserController {
 	private readonly service: UserService
+	private readonly adminService: AdminService
 
-	constructor(service: UserService) {
+	constructor(service: UserService, adminService: AdminService) {
 		this.service = service
+		this.adminService = adminService
 	}
 
 	@Get('full')
@@ -51,21 +58,68 @@ export class UserController {
 	}
 
 	@Post()
+	@UseInterceptors(
+		FileInterceptor('image', {
+			storage: diskStorage({
+				destination: join(__dirname, '..', '..', '..', 'images'),
+				filename: (req, file, callback) => {
+					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
+					const ext = extname(file.originalname)
+					const filename = `${uniqueSuffix}${ext}`
+					callback(null, filename)
+				},
+			}),
+			fileFilter: (req, file, callback) => {
+				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+					return callback(new BadGatewayException('Only image files are allowed!'), false)
+				}
+				callback(null, true)
+			},
+		}),
+	)
 	@ApiResponse({ type: null })
-	create(@Body() payload: UserCreateRequestDto): Promise<UserCreateResponse> {
-		return this.service.create(payload)
+	create(@Body() payload: UserCreateRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserCreateResponse> {
+		const imagePath = file ? `/${file.filename}` : ''
+		return this.service.create({ ...payload, image: imagePath })
 	}
 
 	@Post('with-info')
+	@UseInterceptors(
+		FileInterceptor('image', {
+			storage: diskStorage({
+				destination: join(__dirname, '..', '..', '..', 'images'),
+				filename: (req, file, callback) => {
+					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
+					const ext = extname(file.originalname)
+					const filename = `${uniqueSuffix}${ext}`
+					callback(null, filename)
+				},
+			}),
+			fileFilter: (req, file, callback) => {
+				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+					return callback(new BadGatewayException('Only image files are allowed!'), false)
+				}
+				callback(null, true)
+			},
+		}),
+	)
 	@ApiResponse({ type: null })
-	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto): Promise<UserCreateResponse> {
-		return this.service.createWithUserInfo(payload)
+	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserCreateResponse> {
+		const imagePath = file ? `/${file.filename}` : ''
+
+		return this.service.createWithUserInfo({ ...payload, image: imagePath })
 	}
 
 	@Post('sign-in')
 	@ApiResponse({ type: UserSignInResponseDto })
-	signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
-		return this.service.singIn(payload)
+	async signIn(@Body() payload: UserSignInRequestDto): Promise<UserSignInResponse> {
+		const isemail = isEmail(payload.hemisId)
+		if (isemail) {
+			const adminResponse = await this.adminService.singIn(payload)
+			return { user: adminResponse.admin, tokens: adminResponse.tokens }
+		} else {
+			return this.service.singIn(payload)
+		}
 	}
 
 	@Post('with-json')
@@ -81,16 +135,40 @@ export class UserController {
 	)
 	@ApiResponse({ type: null })
 	createManyWithJson(@UploadedFile() file: any): Promise<null> {
-		const data = file.buffer.toString('utf8')
-		const jsonData: UserCreateManyWithJsonFileDto[] = JSON.parse(data)
+		if (file) {
+			const data = file.buffer.toString('utf8')
+			const jsonData: UserCreateManyWithJsonFileDto[] = JSON.parse(data)
 
-		return this.service.createManyWithJsonFile(jsonData)
+			return this.service.createManyWithJsonFile(jsonData)
+		} else {
+			return null
+		}
 	}
 
 	@Patch(':id')
+	@UseInterceptors(
+		FileInterceptor('image', {
+			storage: diskStorage({
+				destination: join(__dirname, '..', '..', '..', 'images'),
+				filename: (req, file, callback) => {
+					const uniqueSuffix = `${uuidv4()}-${Date.now()}`
+					const ext = extname(file.originalname)
+					const filename = `${uniqueSuffix}${ext}`
+					callback(null, filename)
+				},
+			}),
+			fileFilter: (req, file, callback) => {
+				if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+					return callback(new BadGatewayException('Only image files are allowed!'), false)
+				}
+				callback(null, true)
+			},
+		}),
+	)
 	@ApiResponse({ type: null })
-	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto): Promise<UserUpdateResponse> {
-		return this.service.update(params, payload)
+	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserUpdateResponse> {
+		const imagePath = file ? `/${file.filename}` : ''
+		return this.service.update(params, { ...payload, image: imagePath })
 	}
 
 	@Delete(':id')

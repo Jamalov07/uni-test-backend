@@ -1,8 +1,8 @@
-import { UserType } from '@prisma/client'
+import { UserTypeEnum } from '@prisma/client'
 import { UserInfoCreateRequest, UserInfoFindOneResponse } from '../../user-info'
 
 export declare interface UserFindFullRequest {
-	type?: UserType
+	type?: UserTypeEnum
 	fullName?: string
 	emailAddress?: string
 }
@@ -10,7 +10,7 @@ export declare interface UserFindFullRequest {
 export declare interface UserFindAllRequest {
 	pageNumber?: number
 	pageSize?: number
-	type?: UserType
+	type?: UserTypeEnum
 	fullName?: string
 	emailAddress?: string
 }
@@ -27,7 +27,7 @@ export declare interface UserSignInRequest {
 export declare interface UserCreateRequest {
 	fullName: string
 	image?: string
-	type: UserType
+	type: UserTypeEnum
 	password: string
 	emailAddress?: string
 }
@@ -48,7 +48,7 @@ export declare interface UserCreateWithJsonFileRequest {
 export declare interface UserUpdateRequest {
 	fullName?: string
 	image?: string
-	type?: UserType
+	type?: UserTypeEnum
 	password?: string
 	emailAddress?: string
 }

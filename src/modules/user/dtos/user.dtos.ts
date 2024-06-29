@@ -31,9 +31,9 @@ export class UserFindFullRequestDto implements UserFindFullRequest {
 	fullName?: string
 
 	@ApiPropertyOptional({ example: 'student' })
-	@IsEnum($Enums.UserType)
+	@IsEnum($Enums.UserTypeEnum)
 	@IsOptional()
-	type?: $Enums.UserType
+	type?: $Enums.UserTypeEnum
 }
 
 export class UserFindAllRequestDto implements UserFindAllRequest {
@@ -58,9 +58,9 @@ export class UserFindAllRequestDto implements UserFindAllRequest {
 	fullName?: string
 
 	@ApiPropertyOptional({ example: 'student' })
-	@IsEnum($Enums.UserType)
+	@IsEnum($Enums.UserTypeEnum)
 	@IsOptional()
-	type?: $Enums.UserType
+	type?: $Enums.UserTypeEnum
 }
 
 export class UserFindOneRequestDto implements UserFindOneRequest {
@@ -104,9 +104,9 @@ export class UserCreateRequestDto implements UserCreateRequest {
 	image?: string
 
 	@ApiProperty({ example: 'student' })
-	@IsEnum($Enums.UserType)
+	@IsEnum($Enums.UserTypeEnum)
 	@IsNotEmpty()
-	type: $Enums.UserType
+	type: $Enums.UserTypeEnum
 }
 
 export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
@@ -126,9 +126,9 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 	password: string
 
 	@ApiProperty({ example: 'student' })
-	@IsEnum($Enums.UserType)
+	@IsEnum($Enums.UserTypeEnum)
 	@IsNotEmpty()
-	type: $Enums.UserType
+	type: $Enums.UserTypeEnum
 
 	@ApiProperty({ example: 'link' })
 	@IsString()
@@ -199,9 +199,9 @@ export class UserUpdateRequestDto implements UserUpdateRequest {
 	image?: string
 
 	@ApiPropertyOptional({ example: 'student' })
-	@IsEnum($Enums.UserType)
+	@IsEnum($Enums.UserTypeEnum)
 	@IsOptional()
-	type?: $Enums.UserType
+	type?: $Enums.UserTypeEnum
 }
 
 export class UserDeleteRequestDto implements UserDeleteRequest {

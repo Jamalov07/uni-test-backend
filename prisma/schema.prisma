@@ -7,9 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  admin    @map("admin")
+enum UserTypeEnum {
   student  @map("student")
+}
+
+
+enum AdminTypeEnum {
+  admin  @map("admin")
+  super  @map("super")
 }
 
 
@@ -101,7 +106,7 @@ model Science {
 model User {
   id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
   image         String     @map("image")          @db.VarChar(255)  @default("")
-  type          UserType
+  type          UserTypeEnum                      @default(student)
   password      String     @map("password")       @db.VarChar(255)
   fullName      String     @map("full_name")      @db.VarChar(255) 
   emailAddress  String?    @map("email_address")  @db.VarChar(255)
@@ -117,6 +122,23 @@ model User {
   @@id([ id ])
   @@map("user")
 }
+
+
+model Admin {
+  id            String     @map("id")             @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))
+  image         String     @map("image")          @db.VarChar(255)  @default("")
+  type          AdminTypeEnum                     @default(admin)
+  password      String     @map("password")       @db.VarChar(255)
+  fullName      String     @map("full_name")      @db.VarChar(255) 
+  emailAddress  String     @map("email_address")  @db.VarChar(255)
+  createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
+  updatedAt     DateTime   @map("updated_at")     @db.Timestamp     @updatedAt
+  deletedAt     DateTime?  @map("deleted_at")     @db.Timestamp
+
+  @@id([ id ])
+  @@map("admin")
+}
+
 
 model UserInfo {
   id         String     @map("id")          @db.Uuid          @default(dbgenerated("GEN_RANDOM_UUID()"))

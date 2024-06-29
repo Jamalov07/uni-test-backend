@@ -21,7 +21,7 @@ export class CheckAuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest<Request>()
 
-		console.log(request.url)
+		console.log(request.url, request.method)
 		// if (request.url === '/user/sign-in') {
 		// 	return true
 		// }
