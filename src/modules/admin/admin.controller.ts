@@ -73,7 +73,7 @@ export class AdminController {
 	)
 	@ApiResponse({ type: null })
 	create(@Body() payload: AdminCreateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<AdminCreateResponse> {
-		const imagePath = image ? `/${image.filename}` : ''
+		const imagePath = image ? `/uploads/${image.filename}` : ''
 		return this.service.create({ ...payload, image: imagePath })
 	}
 
@@ -105,7 +105,7 @@ export class AdminController {
 	)
 	@ApiResponse({ type: null })
 	update(@Param() params: AdminFindOneRequestDto, @Body() payload: AdminUpdateRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<AdminUpdateResponse> {
-		const imagePath = image ? `/${image.filename}` : ''
+		const imagePath = image ? `/uploads/${image.filename}` : ''
 		return this.service.update(params, { ...payload, image: imagePath })
 	}
 

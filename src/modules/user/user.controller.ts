@@ -78,8 +78,8 @@ export class UserController {
 		}),
 	)
 	@ApiResponse({ type: null })
-	create(@Body() payload: UserCreateRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserCreateResponse> {
-		const imagePath = file ? `/${file.filename}` : ''
+	create(@Body() payload: UserCreateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
+		const imagePath = image ? `/uploads/${image.filename}` : ''
 		return this.service.create({ ...payload, image: imagePath })
 	}
 
@@ -104,8 +104,8 @@ export class UserController {
 		}),
 	)
 	@ApiResponse({ type: null })
-	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserCreateResponse> {
-		const imagePath = file ? `/${file.filename}` : ''
+	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
+		const imagePath = image ? `/uploads/${image.filename}` : ''
 
 		return this.service.createWithUserInfo({ ...payload, image: imagePath })
 	}
@@ -166,8 +166,8 @@ export class UserController {
 		}),
 	)
 	@ApiResponse({ type: null })
-	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() file: Express.Multer.File): Promise<UserUpdateResponse> {
-		const imagePath = file ? `/${file.filename}` : ''
+	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
+		const imagePath = image ? `/uploads/${image.filename}` : ''
 		return this.service.update(params, { ...payload, image: imagePath })
 	}
 
