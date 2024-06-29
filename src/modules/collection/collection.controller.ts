@@ -50,6 +50,12 @@ export class CollectionController {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
+	@Get(':id/with-qa')
+	@ApiResponse({ type: CollectionFindOneResponseDto })
+	findOneWithQA(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneWithQuestionAnswers> {
+		return this.service.findOneWithQuestions(payload)
+	}
+
 	@Get(':id/with-question')
 	@ApiResponse({ type: CollectionFindOneResponseDto })
 	findOneWithQuestionAnswers(@Param() payload: CollectionFindOneRequestDto): Promise<CollectionFindOneWithQuestionAnswers> {

@@ -1,5 +1,6 @@
 import { CollectionLanguageEnum } from '@prisma/client'
 import { ScienceFindOneResponse } from '../../science'
+import { QuestionFindOneResponse } from '../../question'
 
 export declare interface CollectionFindFullRequest {
 	name?: string
@@ -60,6 +61,7 @@ export declare interface CollectionFindOneResponse {
 	maxAttempts: number
 	givenMinutes: number
 	amountInTest: number
+	questions?: QuestionFindOneResponse[]
 	createdAt: Date
 }
 

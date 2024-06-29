@@ -52,6 +52,30 @@ export class CollectionService {
 		return collection
 	}
 
+	async findOneWithQuestions(payload: CollectionFindOneRequest): Promise<CollectionFindOneWithQuestionAnswers> {
+		const collection = await this.repository.findOneWithQuestionAnswers(payload)
+		if (!collection) {
+			throw new BadRequestException('Collection not found')
+		}
+		if (!collection.questions.length) {
+			throw new BadRequestException('Collections questions is empty!')
+		}
+
+		const { amountInTest, questions } = collection
+
+		const shuffledQuestions = questions.sort(() => 0.5 - Math.random()).slice(0, amountInTest)
+
+		const shuffledQuestionsWithAnswers = shuffledQuestions.map((question) => ({
+			...question,
+			answers: question.answers.sort(() => 0.5 - Math.random()),
+		}))
+
+		return {
+			...collection,
+			questions: shuffledQuestionsWithAnswers,
+		}
+	}
+
 	async findOneAndReturnTxt(payload: CollectionFindOneRequest): Promise<{ filename: string; content: string }> {
 		const collection = await this.repository.findOneWithQuestionAnswers(payload)
 
