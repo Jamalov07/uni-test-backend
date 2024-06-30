@@ -97,6 +97,40 @@ export class UserCollectionRepository {
 		return null
 	}
 
+	async createMany(payload: UserCollectionCreateRequest[]): Promise<UserCollectionCreateResponse> {
+		await this.prisma.userCollection.deleteMany({ where: {} })
+		const candidates = await this.prisma.userCollection.findMany({
+			where: {
+				deletedAt: null,
+				OR: payload.map((p) => ({ collectionId: p.collectionId, userId: p.userId })),
+			},
+		})
+
+		let customPay = []
+		if (candidates.length) {
+			for (const p of payload) {
+				const col = candidates.find((c) => {
+					return c.collectionId === p.collectionId && c.userId === p.userId
+				})
+				if (col) {
+					customPay.push({
+						collectionId: p.collectionId,
+						userId: p.userId,
+						haveAttempt: p.haveAttempt + col.haveAttempt,
+					})
+				} else {
+					customPay.push(p)
+				}
+			}
+			await this.prisma.userCollection.updateMany({ where: { id: { in: candidates.map((c) => c.id) } }, data: { deletedAt: new Date(), haveAttempt: 0 } })
+		} else {
+			customPay = payload
+		}
+
+		await this.prisma.userCollection.createMany({ data: customPay })
+		return null
+	}
+
 	async update(payload: UserCollectionFindOneRequest & UserCollectionUpdateRequest): Promise<UserCollectionUpdateRequest> {
 		await this.prisma.userCollection.update({
 			where: { id: payload.id, deletedAt: null },

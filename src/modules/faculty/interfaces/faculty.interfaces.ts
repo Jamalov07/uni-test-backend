@@ -11,6 +11,35 @@ export declare interface FacultyFindOneRequest {
 	id: string
 }
 
+export declare interface FacultyFindFullForSetCollection {
+	id: string
+	name: string
+	courses?: FacultyCourse[]
+}
+
+export declare interface FacultyCourse {
+	id: string
+	stage: number
+	semestrs: FacultyCourseSemestr[]
+}
+
+export declare interface FacultyCourseSemestr {
+	id: string
+	stage: number
+	groups: FacultyCourseSemestrGroup[]
+}
+
+export declare interface FacultyCourseSemestrGroup {
+	id: string
+	name: string
+	students: FacultyCourseSemestrGroupStudent[]
+}
+
+export declare interface FacultyCourseSemestrGroupStudent {
+	id: string
+	fullName: string
+}
+
 export declare interface FacultyCreateRequest {
 	name: string
 }

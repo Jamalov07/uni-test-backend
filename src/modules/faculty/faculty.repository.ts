@@ -7,6 +7,7 @@ import {
 	FacultyDeleteResponse,
 	FacultyFindAllRequest,
 	FacultyFindAllResponse,
+	FacultyFindFullForSetCollection,
 	FacultyFindFullRequest,
 	FacultyFindFullResponse,
 	FacultyFindOneRequest,
@@ -79,5 +80,45 @@ export class FacultyRepository {
 	async delete(payload: FacultyDeleteRequest): Promise<FacultyDeleteResponse> {
 		await this.prisma.faculty.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
+	}
+
+	async getAllForSetCollections(): Promise<FacultyFindFullForSetCollection[]> {
+		const faculties = await this.prisma.faculty.findMany({ where: { deletedAt: null }, select: { id: true, name: true } })
+		const courses = await this.prisma.course.findMany({ where: { deletedAt: null }, select: { id: true, stage: true } })
+		const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true } })
+
+		const customFaculties = []
+		for (const f of faculties) {
+			const customCourses = []
+			for (const c of courses) {
+				const customSemestrs = []
+				for (const s of semestrs) {
+					const groups = await this.prisma.group.findMany({
+						where: {
+							deletedAt: null,
+							facultyId: f.id,
+							courseId: c.id,
+							semestrId: s.id,
+						},
+						select: { id: true, name: true },
+					})
+					const customGroups = []
+					for (const g of groups) {
+						const userInfos = await this.prisma.userInfo.findMany({
+							where: {
+								deletedAt: null,
+								groupId: g.id,
+							},
+							select: { user: { select: { id: true, fullName: true } } },
+						})
+						customGroups.push({ ...g, students: userInfos.map((u) => ({ ...u.user })) })
+					}
+					customSemestrs.push({ ...s, groups: customGroups })
+				}
+				customCourses.push({ ...c, semestrs: customSemestrs })
+			}
+			customFaculties.push({ ...f, courses: customCourses })
+		}
+		return customFaculties
 	}
 }

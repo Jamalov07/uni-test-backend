@@ -11,8 +11,17 @@ import {
 	FacultyUpdateRequestDto,
 	FacultyFindAllResponseDto,
 	FacultyFindOneResponseDto,
+	FacultyFindFullForSetCollectionDto,
 } from './dtos'
-import { FacultyCreateResponse, FacultyDeleteResponse, FacultyFindAllResponse, FacultyFindFullResponse, FacultyFindOneResponse, FacultyUpdateResponse } from './interfaces'
+import {
+	FacultyCreateResponse,
+	FacultyDeleteResponse,
+	FacultyFindAllResponse,
+	FacultyFindFullForSetCollection,
+	FacultyFindFullResponse,
+	FacultyFindOneResponse,
+	FacultyUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
@@ -31,6 +40,12 @@ export class FacultyController {
 	@ApiResponse({ type: FacultyFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: FacultyFindFullRequestDto): Promise<FacultyFindFullResponse> {
 		return this.service.findFull(payload)
+	}
+
+	@Get('with-details')
+	@ApiResponse({ type: FacultyFindFullForSetCollectionDto, isArray: true })
+	findFullWithDetails(): Promise<FacultyFindFullForSetCollection[]> {
+		return this.service.findAllForSetCollection()
 	}
 
 	@Get('all')

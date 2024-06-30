@@ -58,6 +58,12 @@ export class UserCollectionController {
 		return this.service.create(payload)
 	}
 
+	@Post('many')
+	@ApiResponse({ type: null })
+	createMany(@Body() payload: UserCollectionCreateRequestDto[]): Promise<UserCollectionCreateResponse> {
+		return this.service.createMany(payload)
+	}
+
 	@Patch(':id')
 	@ApiResponse({ type: null })
 	update(@Param() params: UserCollectionFindOneRequestDto, @Body() payload: UserCollectionUpdateRequestDto): Promise<UserCollectionUpdateResponse> {

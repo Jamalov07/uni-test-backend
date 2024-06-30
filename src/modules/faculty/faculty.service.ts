@@ -7,6 +7,7 @@ import {
 	FacultyDeleteResponse,
 	FacultyFindAllRequest,
 	FacultyFindAllResponse,
+	FacultyFindFullForSetCollection,
 	FacultyFindFullRequest,
 	FacultyFindFullResponse,
 	FacultyFindOneRequest,
@@ -65,5 +66,9 @@ export class FacultyService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async findAllForSetCollection(): Promise<FacultyFindFullForSetCollection[]> {
+		return this.repository.getAllForSetCollections()
 	}
 }

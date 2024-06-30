@@ -1,9 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	FacultyCourse,
+	FacultyCourseSemestr,
+	FacultyCourseSemestrGroup,
+	FacultyCourseSemestrGroupStudent,
 	FacultyCreateRequest,
 	FacultyDeleteRequest,
 	FacultyFindAllRequest,
 	FacultyFindAllResponse,
+	FacultyFindFullForSetCollection,
 	FacultyFindFullRequest,
 	FacultyFindOneRequest,
 	FacultyFindOneResponse,
@@ -89,4 +94,57 @@ export class FacultyFindAllResponseDto implements FacultyFindAllResponse {
 
 	@ApiProperty({ type: FacultyFindOneResponseDto, isArray: true })
 	data: FacultyFindOneResponse[]
+}
+//=========================
+
+export class FacultyCourseSemestrGroupStudentDto implements FacultyCourseSemestrGroupStudent {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'john doe' })
+	fullName: string
+}
+
+export class FacultyCourseSemestrGroupDto implements FacultyCourseSemestrGroup {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'groupname' })
+	name: string
+
+	@ApiProperty({ type: FacultyCourseSemestrGroupStudentDto, isArray: true })
+	students: FacultyCourseSemestrGroupStudent[]
+}
+
+export class FacultyCourseSemestrDto implements FacultyCourseSemestr {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 2 })
+	stage: number
+
+	@ApiProperty({ type: FacultyCourseSemestrGroupDto, isArray: true })
+	groups: FacultyCourseSemestrGroup[]
+}
+
+export class FacultyCourseDto implements FacultyCourse {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 2 })
+	stage: number
+
+	@ApiProperty({ type: FacultyCourseSemestrDto, isArray: true })
+	semestrs: FacultyCourseSemestr[]
+}
+
+export class FacultyFindFullForSetCollectionDto implements FacultyFindFullForSetCollection {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'name' })
+	name: string
+
+	@ApiProperty({ type: FacultyCourseDto, isArray: true })
+	courses?: FacultyCourse[]
 }

@@ -53,6 +53,10 @@ export class UserCollectionService {
 		return this.repository.create(payload)
 	}
 
+	async createMany(payload: UserCollectionCreateRequest[]): Promise<UserCollectionCreateResponse> {
+		return this.repository.createMany(payload)
+	}
+
 	async update(params: UserCollectionFindOneRequest, payload: UserCollectionUpdateRequest): Promise<UserCollectionUpdateResponse> {
 		await this.findOne({ id: params.id })
 		payload.collectionId || payload.userId ? await this.findOneByUserCollection({ userId: payload.userId, collectionId: payload.collectionId }) : null
