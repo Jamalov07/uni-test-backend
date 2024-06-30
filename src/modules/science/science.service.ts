@@ -7,6 +7,7 @@ import {
 	ScienceDeleteResponse,
 	ScienceFindAllRequest,
 	ScienceFindAllResponse,
+	ScienceFindFullForArchive,
 	ScienceFindFullRequest,
 	ScienceFindFullResponse,
 	ScienceFindOneRequest,
@@ -29,6 +30,11 @@ export class ScienceService {
 
 	async findAll(payload: ScienceFindAllRequest): Promise<ScienceFindAllResponse> {
 		const sciences = this.repository.findAll(payload)
+		return sciences
+	}
+
+	async findAllForArchive(id: string): Promise<ScienceFindFullForArchive[]> {
+		const sciences = this.repository.findAllForArchivePage(id)
 		return sciences
 	}
 

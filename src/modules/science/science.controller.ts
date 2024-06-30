@@ -11,10 +11,20 @@ import {
 	ScienceUpdateRequestDto,
 	ScienceFindAllResponseDto,
 	ScienceFindOneResponseDto,
+	ScienceFindFullForArchiveDto,
 } from './dtos'
-import { ScienceCreateResponse, ScienceDeleteResponse, ScienceFindAllResponse, ScienceFindFullResponse, ScienceFindOneResponse, ScienceUpdateResponse } from './interfaces'
+import {
+	ScienceCreateResponse,
+	ScienceDeleteResponse,
+	ScienceFindAllResponse,
+	ScienceFindFullForArchive,
+	ScienceFindFullResponse,
+	ScienceFindOneResponse,
+	ScienceUpdateResponse,
+} from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { UserIdInAccessToken } from '../../decorators'
 
 @ApiTags('Science')
 @ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
@@ -37,6 +47,12 @@ export class ScienceController {
 	@ApiResponse({ type: ScienceFindAllResponseDto })
 	findAll(@Query() payload: ScienceFindAllRequestDto): Promise<ScienceFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
+	}
+
+	@Get('for-archive')
+	@ApiResponse({ type: ScienceFindFullForArchiveDto, isArray: true })
+	findAllForArchive(@UserIdInAccessToken() id: string): Promise<ScienceFindFullForArchive[]> {
+		return this.service.findAllForArchive(id)
 	}
 
 	@Get(':id')

@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { QuestionService } from './question.service'
 import {
 	QuestionCreateRequestDto,
@@ -67,6 +67,7 @@ export class QuestionController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: UploadedTxtFile): Promise<QuestionsCreateWithAnswersResponse> {
 		return this.service.createManyWithAnswers(payload, file.buffer.toString())

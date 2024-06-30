@@ -66,6 +66,9 @@ export class CollectionFindOneRequestDto implements CollectionFindOneRequest {
 }
 
 export class CollectionCreateRequestDto implements CollectionCreateRequest {
+	@ApiProperty({ type: 'string', format: 'binary', description: 'TXT file' })
+	file: any
+
 	@ApiProperty({ example: 'name' })
 	@IsString()
 	@IsNotEmpty()

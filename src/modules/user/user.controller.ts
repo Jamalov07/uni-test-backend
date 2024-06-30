@@ -1,5 +1,5 @@
 import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
 	UserCreateRequestDto,
@@ -77,6 +77,7 @@ export class UserController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	create(@Body() payload: UserCreateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
@@ -103,6 +104,7 @@ export class UserController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createWithInfo(@Body() payload: UserCreateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserCreateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
@@ -133,6 +135,20 @@ export class UserController {
 			},
 		}),
 	)
+	@ApiBody({
+		description: 'Payload with json file',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+			},
+			required: ['file'],
+		},
+	})
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createManyWithJson(@UploadedFile() file: any): Promise<null> {
 		if (file) {
@@ -165,6 +181,7 @@ export class UserController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined

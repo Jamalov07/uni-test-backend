@@ -7,6 +7,7 @@ import {
 	ScienceDeleteResponse,
 	ScienceFindAllRequest,
 	ScienceFindAllResponse,
+	ScienceFindFullForArchive,
 	ScienceFindFullRequest,
 	ScienceFindFullResponse,
 	ScienceFindOneRequest,
@@ -79,5 +80,51 @@ export class ScienceRepository {
 	async delete(payload: ScienceDeleteRequest): Promise<ScienceDeleteResponse> {
 		await this.prisma.science.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
+	}
+
+	async findAllForArchivePage(userId: string): Promise<ScienceFindFullForArchive[]> {
+		const sciences = await this.prisma.science.findMany({
+			where: {
+				deletedAt: null,
+				collections: {
+					some: {
+						archives: {
+							some: {
+								userId: userId,
+							},
+						},
+					},
+				},
+			},
+			select: {
+				id: true,
+				name: true,
+				createdAt: true,
+				collections: {
+					select: {
+						id: true,
+						amountInTest: true,
+						createdAt: true,
+						givenMinutes: true,
+						maxAttempts: true,
+						language: true,
+						name: true,
+						archives: {
+							select: {
+								course: { select: { id: true, stage: true } },
+								faculty: { select: { id: true, name: true } },
+								semestr: { select: { id: true, stage: true } },
+								group: { select: { id: true, name: true } },
+								result: true,
+								id: true,
+								testCount: true,
+							},
+						},
+					},
+				},
+			},
+		})
+
+		return sciences
 	}
 }

@@ -98,10 +98,13 @@ export class UserCreateRequestDto implements UserCreateRequest {
 	@IsNotEmpty()
 	password: string
 
-	@ApiProperty({ example: 'link' })
-	@IsString()
-	@IsOptional()
-	image?: string
+	// @ApiProperty({ example: 'link' })
+	// @IsString()
+	// @IsOptional()
+	// image?: string
+
+	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
+	image?: any
 
 	@ApiProperty({ example: 'student' })
 	@IsEnum($Enums.UserTypeEnum)
@@ -130,10 +133,12 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 	@IsNotEmpty()
 	type: $Enums.UserTypeEnum
 
-	@ApiProperty({ example: 'link' })
-	@IsString()
-	@IsOptional()
-	image?: string
+	// @ApiProperty({ example: 'link' })
+	// @IsString()
+	// @IsOptional()
+	// image?: string
+	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
+	image?: any
 
 	@ApiPropertyOptional({ type: UserInfoWithOutUserIdDto })
 	@IsObject()
@@ -193,10 +198,13 @@ export class UserUpdateRequestDto implements UserUpdateRequest {
 	@IsOptional()
 	password?: string
 
-	@ApiPropertyOptional({ example: 'link' })
-	@IsString()
-	@IsOptional()
-	image?: string
+	// @ApiPropertyOptional({ example: 'link' })
+	// @IsString()
+	// @IsOptional()
+	// image?: string
+
+	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
+	image?: any
 
 	@ApiPropertyOptional({ example: 'student' })
 	@IsEnum($Enums.UserTypeEnum)

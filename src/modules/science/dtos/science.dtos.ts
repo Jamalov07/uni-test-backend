@@ -1,9 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	ScienceCollection,
+	ScienceCollectionArchive,
+	ScienceCollectionArchiveCourse,
+	ScienceCollectionArchiveFaculty,
+	ScienceCollectionArchiveSemestr,
 	ScienceCreateRequest,
 	ScienceDeleteRequest,
 	ScienceFindAllRequest,
 	ScienceFindAllResponse,
+	ScienceFindFullForArchive,
 	ScienceFindFullRequest,
 	ScienceFindOneRequest,
 	ScienceFindOneResponse,
@@ -89,4 +95,87 @@ export class ScienceFindAllResponseDto implements ScienceFindAllResponse {
 
 	@ApiProperty({ type: ScienceFindOneResponseDto, isArray: true })
 	data: ScienceFindOneResponse[]
+}
+
+export class ScienceCollectionArchiveFacultyDto implements ScienceCollectionArchiveFaculty {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'name' })
+	name: string
+}
+
+export class ScienceCollectionArchiveCourseDto implements ScienceCollectionArchiveCourse {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 1 })
+	stage: number
+}
+
+export class ScienceCollectionArchiveSemestrDto implements ScienceCollectionArchiveSemestr {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 3 })
+	stage: number
+}
+
+export class ScienceCollectionArchiveDto implements ScienceCollectionArchive {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ type: ScienceCollectionArchiveFacultyDto })
+	faculty: ScienceCollectionArchiveFaculty
+
+	@ApiProperty({ type: ScienceCollectionArchiveCourseDto })
+	course: ScienceCollectionArchiveCourse
+
+	@ApiProperty({ type: ScienceCollectionArchiveSemestrDto })
+	semestr: ScienceCollectionArchiveSemestr
+
+	@ApiProperty({ example: 4 })
+	result: number
+
+	@ApiProperty({ example: 10 })
+	testCount: number
+}
+export class ScienceCollectionDto implements ScienceCollection {
+	@ApiProperty({ example: 50 })
+	givenMinutes: number
+
+	@ApiProperty({ example: new Date() })
+	createdAt: Date
+
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'uz' })
+	language: string
+
+	@ApiProperty({ example: 20 })
+	amountInTest: number
+
+	@ApiProperty({ example: 2 })
+	maxAttempts: number
+
+	@ApiProperty({ example: 'name' })
+	name: string
+
+	@ApiProperty({ type: ScienceCollectionArchiveDto, isArray: true })
+	archives: ScienceCollectionArchive[]
+}
+
+export class ScienceFindFullForArchiveDto implements ScienceFindFullForArchive {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
+	@ApiProperty({ example: 'name' })
+	name: string
+
+	@ApiProperty({ example: new Date() })
+	createdAt: Date
+
+	@ApiProperty({ type: ScienceCollectionDto, isArray: true })
+	collections: ScienceCollection[]
 }

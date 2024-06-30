@@ -40,6 +40,48 @@ export declare interface ScienceFindOneResponse {
 	createdAt: Date
 }
 
+export declare interface ScienceFindFullForArchive {
+	id: string
+	name: string
+	createdAt: Date
+	collections: ScienceCollection[]
+}
+
+export declare interface ScienceCollection {
+	id: string
+	amountInTest: number
+	createdAt: Date
+	givenMinutes: number
+	maxAttempts: number
+	language: string
+	name: string
+	archives: ScienceCollectionArchive[]
+}
+
+export declare interface ScienceCollectionArchive {
+	id: string
+	testCount: number
+	result: number
+	course: ScienceCollectionArchiveCourse
+	faculty: ScienceCollectionArchiveFaculty
+	semestr: ScienceCollectionArchiveSemestr
+}
+
+export declare interface ScienceCollectionArchiveCourse {
+	id: string
+	stage: number
+}
+
+export declare interface ScienceCollectionArchiveFaculty {
+	id: string
+	name: string
+}
+
+export declare interface ScienceCollectionArchiveSemestr {
+	id: string
+	stage: number
+}
+
 export declare type ScienceCreateResponse = null
 
 export declare type ScienceUpdateResponse = null

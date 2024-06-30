@@ -98,6 +98,8 @@ export class AdminCreateRequestDto implements AdminCreateRequest {
 	// @IsString()
 	// @IsOptional()
 	// image?: string
+	@ApiProperty({ type: 'string', format: 'binary', description: 'Image file' })
+	image?: any
 
 	@ApiProperty({ example: 'student' })
 	@IsEnum($Enums.AdminTypeEnum)
@@ -125,6 +127,8 @@ export class AdminUpdateRequestDto implements AdminUpdateRequest {
 	// @IsString()
 	// @IsOptional()
 	// image?: string
+	@ApiProperty({ type: 'string', format: 'binary', description: 'Image file' })
+	image?: any
 
 	@ApiPropertyOptional({ example: 'student' })
 	@IsEnum($Enums.AdminTypeEnum)

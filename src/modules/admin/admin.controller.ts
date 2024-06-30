@@ -1,5 +1,5 @@
 import { BadGatewayException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AdminService } from './admin.service'
 import {
 	AdminCreateRequestDto,
@@ -71,6 +71,7 @@ export class AdminController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	create(@Body() payload: AdminCreateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<AdminCreateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : ''
@@ -103,6 +104,7 @@ export class AdminController {
 			},
 		}),
 	)
+	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	update(@Param() params: AdminFindOneRequestDto, @Body() payload: AdminUpdateRequestDto, @UploadedFile() image?: Express.Multer.File): Promise<AdminUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined

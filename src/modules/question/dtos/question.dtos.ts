@@ -67,6 +67,9 @@ export class QuestionCreateRequestDto implements QuestionCreateRequest {
 }
 
 export class QuestionsCreateWithAnswersDto implements Pick<QuestionsCreateWithAnswersRequest, 'collectionId'> {
+	@ApiProperty({ type: 'string', format: 'binary', description: 'TXT file' })
+	file: any
+
 	@ApiProperty({ example: 'uuid' })
 	@IsUUID('4')
 	@IsNotEmpty()
