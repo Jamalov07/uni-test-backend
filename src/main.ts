@@ -11,7 +11,16 @@ setImmediate(async (): Promise<void> => {
 	app.use(json({ limit: '50mb' }))
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
-	const swaggerConfig = new DocumentBuilder().build()
+	const swaggerConfig = new DocumentBuilder()
+		.addBearerAuth({
+			description: `[just text field] Please enter token in following format: Bearer <JWT>`,
+			name: 'Authorization',
+			bearerFormat: 'Bearer', // I`ve tested not to use this field, but the result was the same
+			scheme: 'Bearer',
+			type: 'http', // I`ve attempted type: 'apiKey' too
+			in: 'Header',
+		})
+		.build()
 	const document = SwaggerModule.createDocument(app, swaggerConfig)
 	SwaggerModule.setup('docs', app, document)
 

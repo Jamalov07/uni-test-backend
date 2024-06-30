@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { GroupService } from './group.service'
 import {
 	GroupCreateRequestDto,
@@ -17,8 +17,8 @@ import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Group')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('group')
 export class GroupController {
 	private readonly service: GroupService

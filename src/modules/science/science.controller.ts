@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ScienceService } from './science.service'
 import {
 	ScienceCreateRequestDto,
@@ -27,8 +27,8 @@ import { CheckAuthGuard } from '../../guards'
 import { UserIdInAccessToken } from '../../decorators'
 
 @ApiTags('Science')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('science')
 export class ScienceController {
 	private readonly service: ScienceService

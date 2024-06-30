@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { QuestionService } from './question.service'
 import {
 	QuestionCreateRequestDto,
@@ -28,8 +28,8 @@ import { UploadedTxtFile } from '../../interfaces'
 import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Question')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('question')
 export class QuestionController {
 	private readonly service: QuestionService

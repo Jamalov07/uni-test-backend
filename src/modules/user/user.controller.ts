@@ -1,5 +1,5 @@
 import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiBody, ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
 	UserCreateRequestDto,
@@ -27,7 +27,6 @@ import { extname, join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
 
 @ApiTags('User')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
 @Controller('user')
 export class UserController {
@@ -40,24 +39,28 @@ export class UserController {
 	}
 
 	@Get('full')
+	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: UserFindFullRequestDto): Promise<UserFindFullResponse> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
+	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindAllResponseDto })
 	findAll(@Query() payload: UserFindAllRequestDto): Promise<UserFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
+	@ApiBearerAuth()
 	@ApiResponse({ type: UserFindOneResponseDto })
 	findOne(@Param() payload: UserFindOneRequestDto): Promise<UserFindOneResponse> {
 		return this.service.findOne(payload)
 	}
 
 	@Post()
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
@@ -85,6 +88,7 @@ export class UserController {
 	}
 
 	@Post('with-info')
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
@@ -125,6 +129,7 @@ export class UserController {
 	}
 
 	@Post('with-json')
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('file', {
 			fileFilter: (req, file, cb) => {
@@ -162,6 +167,7 @@ export class UserController {
 	}
 
 	@Patch(':id')
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
@@ -189,6 +195,7 @@ export class UserController {
 	}
 
 	@Delete(':id')
+	@ApiBearerAuth()
 	@ApiResponse({ type: null })
 	delete(@Param() payload: UserDeleteRequestDto): Promise<UserDeleteResponse> {
 		return this.service.delete(payload)

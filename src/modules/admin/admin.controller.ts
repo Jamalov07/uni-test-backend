@@ -1,5 +1,5 @@
 import { BadGatewayException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AdminService } from './admin.service'
 import {
 	AdminCreateRequestDto,
@@ -23,7 +23,6 @@ import { CheckAuthGuard } from '../../guards'
 import { FileInterceptor } from '@nestjs/platform-express'
 
 @ApiTags('Admin')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
 @Controller('admin')
 export class AdminController {
@@ -34,24 +33,28 @@ export class AdminController {
 	}
 
 	@Get('full')
+	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: AdminFindFullRequestDto): Promise<AdminFindFullResponse> {
 		return this.service.findFull(payload)
 	}
 
 	@Get('all')
+	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindAllResponseDto })
 	findAll(@Query() payload: AdminFindAllRequestDto): Promise<AdminFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
 	}
 
 	@Get(':id')
+	@ApiBearerAuth()
 	@ApiResponse({ type: AdminFindOneResponseDto })
 	findOne(@Param() payload: AdminFindOneRequestDto): Promise<AdminFindOneResponse> {
 		return this.service.findOne(payload)
 	}
 
 	@Post()
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
@@ -85,6 +88,7 @@ export class AdminController {
 	}
 
 	@Patch(':id')
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FileInterceptor('image', {
 			storage: diskStorage({
@@ -112,6 +116,7 @@ export class AdminController {
 	}
 
 	@Delete(':id')
+	@ApiBearerAuth()
 	@ApiResponse({ type: null })
 	delete(@Param() payload: AdminDeleteRequestDto): Promise<AdminDeleteResponse> {
 		return this.service.delete(payload)

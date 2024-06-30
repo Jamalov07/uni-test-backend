@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { FacultyService } from './faculty.service'
 import {
 	FacultyCreateRequestDto,
@@ -26,8 +26,8 @@ import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 
 @ApiTags('Faculty')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('faculty')
 export class FacultyController {
 	private readonly service: FacultyService

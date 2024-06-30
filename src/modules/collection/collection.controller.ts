@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
-import { ApiConsumes, ApiHeaders, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CollectionService } from './collection.service'
 import {
 	CollectionCreateRequestDto,
@@ -28,8 +28,8 @@ import { CheckAuthGuard } from '../../guards'
 import { Response } from 'express'
 
 @ApiTags('Collection')
-@ApiHeaders([{ name: 'Authorization', description: 'Bearer token' }])
 @UseGuards(CheckAuthGuard)
+@ApiBearerAuth()
 @Controller('collection')
 export class CollectionController {
 	private readonly service: CollectionService
