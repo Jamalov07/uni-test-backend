@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { UserCollectionRepository } from './user-collection.repository'
 import {
+	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
 	UserCollectionCreateResponse,
 	UserCollectionDeleteRequest,
@@ -53,7 +54,7 @@ export class UserCollectionService {
 		return this.repository.create(payload)
 	}
 
-	async createMany(payload: UserCollectionCreateRequest[]): Promise<UserCollectionCreateResponse> {
+	async createMany(payload: UserCollectionCreateManyRequest): Promise<UserCollectionCreateResponse> {
 		return this.repository.createMany(payload)
 	}
 

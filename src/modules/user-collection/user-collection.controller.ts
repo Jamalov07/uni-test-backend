@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserCollectionService } from './user-collection.service'
 import {
 	UserCollectionCreateRequestDto,
@@ -11,6 +11,7 @@ import {
 	UserCollectionUpdateRequestDto,
 	UserCollectionFindAllResponseDto,
 	UserCollectionFindOneResponseDto,
+	UserCollectionCreateManyRequestDto,
 } from './dtos'
 import {
 	UserCollectionCreateResponse,
@@ -60,8 +61,7 @@ export class UserCollectionController {
 
 	@Post('many')
 	@ApiResponse({ type: null })
-	@ApiBody({ type: UserCollectionCreateRequestDto, isArray: true })
-	createMany(@Body() payload: UserCollectionCreateRequestDto[]): Promise<UserCollectionCreateResponse> {
+	createMany(@Body() payload: UserCollectionCreateManyRequestDto): Promise<UserCollectionCreateResponse> {
 		return this.service.createMany(payload)
 	}
 

@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
 	UserCollectionDeleteRequest,
 	UserCollectionFindAllRequest,
@@ -69,6 +70,11 @@ export class UserCollectionCreateRequestDto implements UserCollectionCreateReque
 	@IsUUID('4')
 	@IsNotEmpty()
 	collectionId: string
+}
+
+export class UserCollectionCreateManyRequestDto implements UserCollectionCreateManyRequest {
+	@ApiProperty({ type: UserCollectionCreateRequestDto, isArray: true })
+	userCollections: UserCollectionCreateRequest[]
 }
 
 export class UserCollectionUpdateRequestDto implements UserCollectionUpdateRequest {

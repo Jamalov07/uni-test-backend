@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma'
 import {
+	UserCollectionCreateManyRequest,
 	UserCollectionCreateRequest,
 	UserCollectionCreateResponse,
 	UserCollectionDeleteRequest,
@@ -97,18 +98,18 @@ export class UserCollectionRepository {
 		return null
 	}
 
-	async createMany(payload: UserCollectionCreateRequest[]): Promise<UserCollectionCreateResponse> {
+	async createMany(payload: UserCollectionCreateManyRequest): Promise<UserCollectionCreateResponse> {
 		await this.prisma.userCollection.deleteMany({ where: {} })
 		const candidates = await this.prisma.userCollection.findMany({
 			where: {
 				deletedAt: null,
-				OR: payload.map((p) => ({ collectionId: p.collectionId, userId: p.userId })),
+				OR: payload.userCollections.map((p) => ({ collectionId: p.collectionId, userId: p.userId })),
 			},
 		})
 
 		let customPay = []
 		if (candidates.length) {
-			for (const p of payload) {
+			for (const p of payload.userCollections) {
 				const col = candidates.find((c) => {
 					return c.collectionId === p.collectionId && c.userId === p.userId
 				})
@@ -124,7 +125,7 @@ export class UserCollectionRepository {
 			}
 			await this.prisma.userCollection.updateMany({ where: { id: { in: candidates.map((c) => c.id) } }, data: { deletedAt: new Date(), haveAttempt: 0 } })
 		} else {
-			customPay = payload
+			customPay = payload.userCollections
 		}
 
 		await this.prisma.userCollection.createMany({ data: customPay })

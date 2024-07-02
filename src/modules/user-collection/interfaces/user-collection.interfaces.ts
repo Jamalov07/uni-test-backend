@@ -23,6 +23,10 @@ export declare interface UserCollectionCreateRequest {
 	collectionId: string
 }
 
+export declare interface UserCollectionCreateManyRequest {
+	userCollections: UserCollectionCreateRequest[]
+}
+
 export declare interface UserCollectionUpdateRequest {
 	haveAttempt?: number
 	userId?: string
