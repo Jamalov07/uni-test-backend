@@ -104,9 +104,9 @@ export class CollectionRepository {
 		return collection
 	}
 
-	async findByName(payload: { name: string }): Promise<CollectionFindOneResponse> {
+	async findByName(payload: { name: string; id?: string }): Promise<CollectionFindOneResponse> {
 		const collection = await this.prisma.collection.findFirst({
-			where: { name: payload.name, deletedAt: null },
+			where: { name: payload.name, deletedAt: null, id: { not: payload.id } },
 			select: {
 				id: true,
 				language: true,

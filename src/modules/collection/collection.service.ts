@@ -92,7 +92,7 @@ export class CollectionService {
 	}
 
 	async findOneByName(payload: Partial<CollectionFindOneResponse>): Promise<CollectionFindOneResponse> {
-		const collection = await this.repository.findByName({ name: payload.name })
+		const collection = await this.repository.findByName({ name: payload.name, id: payload.id })
 		if (collection) {
 			throw new BadRequestException('Collection already exists')
 		}
@@ -113,7 +113,7 @@ export class CollectionService {
 
 	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<CollectionUpdateResponse> {
 		await this.findOne({ id: params.id })
-		payload.name ? await this.findOneByName({ name: payload.name }) : null
+		payload.name ? await this.findOneByName({ name: payload.name, id: params.id }) : null
 
 		await this.repository.update({ ...params, ...payload })
 		return null
