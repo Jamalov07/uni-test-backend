@@ -10,7 +10,8 @@ import {
 	UserCollectionFindOneResponse,
 	UserCollectionUpdateRequest,
 } from '../interfaces'
-import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
+import { IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, IsUUID } from 'class-validator'
+import { Type } from 'class-transformer'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 
@@ -74,6 +75,9 @@ export class UserCollectionCreateRequestDto implements UserCollectionCreateReque
 
 export class UserCollectionCreateManyRequestDto implements UserCollectionCreateManyRequest {
 	@ApiProperty({ type: UserCollectionCreateRequestDto, isArray: true })
+	@IsArray()
+	@IsObject({ each: true })
+	@Type(() => UserCollectionCreateRequestDto)
 	userCollections: UserCollectionCreateRequest[]
 }
 
