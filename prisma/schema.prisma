@@ -230,7 +230,7 @@ model Archive {
   testCount     Int        @map("test_count")     @db.Integer 
   facultyId     String     @map("faculty_id")     @db.Uuid 
   collectionId  String     @map("collection_id")  @db.Uuid 
-  startTime     DateTime   @map("start_time")     @db.Timestamp
+  startTime     DateTime   @map("start_time")     @db.Timestamp     @default(now())
   endTime       DateTime   @map("end_time")       @db.Timestamp     @default(now())
 
   createdAt     DateTime   @map("created_at")     @db.Timestamp     @default(now())
