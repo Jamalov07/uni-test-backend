@@ -1,6 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
 	ArchiveCollection,
+	ArchiveCollectionQuestionAnswerResponse,
+	ArchiveCollectionQuestionResponse,
+	ArchiveCollectionResponse,
 	ArchiveCreateRequest,
 	ArchiveDeleteRequest,
 	ArchiveFindAllRequest,
@@ -12,7 +15,7 @@ import {
 	CollectionQuestion,
 	QuestionAnswer,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
@@ -165,6 +168,16 @@ export class ArchiveCreateRequestDto implements ArchiveCreateRequest {
 	@IsNotEmpty()
 	@Type(() => ArchiveCollectionDto)
 	collection: ArchiveCollection
+
+	@ApiProperty({ example: new Date() })
+	@IsDate()
+	@IsNotEmpty()
+	endTime: Date
+
+	@ApiProperty({ example: new Date() })
+	@IsDate()
+	@IsNotEmpty()
+	startTime: Date
 }
 
 export class ArchiveUpdateRequestDto implements ArchiveUpdateRequest {
@@ -213,6 +226,57 @@ export class ArchiveFindFullResponseDto implements ArchiveFindOneResponse {
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
+
+	@ApiProperty({ example: new Date() })
+	endTime: Date
+
+	@ApiProperty({ example: new Date() })
+	startTime: Date
+}
+
+export class ArchiveCollectionQuestionAnswerResponseDto implements ArchiveCollectionQuestionAnswerResponse {
+	@ApiProperty({ example: true })
+	isChecked: boolean
+
+	@ApiProperty({ example: true })
+	isCorrect: boolean
+
+	@ApiProperty({ example: 'toshkent' })
+	text: string
+}
+
+export class ArchiveCollectionQuestionResponseDto implements ArchiveCollectionQuestionResponse {
+	@ApiProperty({ example: 'uzb poytaxti?' })
+	text: string
+
+	@ApiProperty({ type: ArchiveCollectionQuestionAnswerResponseDto, isArray: true })
+	answers: ArchiveCollectionQuestionAnswerResponse[]
+}
+
+export class ArchiveCollectionResponseDto implements ArchiveCollectionResponse {
+	@ApiProperty({ example: 'john doe' })
+	admin: string
+
+	@ApiProperty({ example: 10 })
+	amountInTest: number
+
+	@ApiProperty({ example: 100 })
+	givenMinutes: number
+
+	@ApiProperty({ example: 4 })
+	maxAttempts: number
+
+	@ApiProperty({ example: 'uz' })
+	language: string
+
+	@ApiProperty({ example: 'tarix test' })
+	name: string
+
+	@ApiProperty({ example: 'tarix' })
+	science: string
+
+	@ApiProperty({ type: ArchiveCollectionQuestionResponseDto, isArray: true })
+	questions: ArchiveCollectionQuestionResponse[]
 }
 
 export class ArchiveFindOneResponseDto implements ArchiveFindOneResponse {
@@ -242,8 +306,18 @@ export class ArchiveFindOneResponseDto implements ArchiveFindOneResponse {
 
 	@ApiProperty({ example: 10 })
 	testCount: number
+
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
+
+	@ApiProperty({ example: new Date() })
+	endTime: Date
+
+	@ApiProperty({ example: new Date() })
+	startTime: Date
+
+	@ApiProperty({ type: ArchiveCollectionResponseDto })
+	archiveCollection?: ArchiveCollectionResponse
 }
 
 export class ArchiveFindAllResponseDto implements ArchiveFindAllResponse {

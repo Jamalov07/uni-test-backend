@@ -34,6 +34,8 @@ export declare interface ArchiveCreateRequest {
 	userId: string
 	collectionId: string
 	collection: ArchiveCollection
+	startTime: Date
+	endTime: Date
 }
 
 export declare interface ArchiveUpdateRequest {
@@ -66,6 +68,31 @@ export declare interface ArchiveFindOneResponse {
 	faculty: FacultyFindOneResponse
 	collection: CollectionFindOneResponse
 	createdAt: Date
+	startTime: Date
+	endTime: Date
+	archiveCollection?: ArchiveCollectionResponse
+}
+
+export class ArchiveCollectionResponse {
+	admin: string
+	amountInTest: number
+	givenMinutes: number
+	language: string
+	maxAttempts: number
+	name: string
+	science: string
+	questions: ArchiveCollectionQuestionResponse[]
+}
+
+export class ArchiveCollectionQuestionResponse {
+	text: string
+	answers: ArchiveCollectionQuestionAnswerResponse[]
+}
+
+export class ArchiveCollectionQuestionAnswerResponse {
+	isChecked: boolean
+	isCorrect: boolean
+	text: string
 }
 
 export declare type ArchiveCreateResponse = null

@@ -61,6 +61,8 @@ export class ArchiveRepository {
 				testCount: true,
 				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
 				createdAt: true,
+				startTime: true,
+				endTime: true,
 			},
 		})
 
@@ -101,6 +103,8 @@ export class ArchiveRepository {
 				semestr: { select: { id: true, stage: true, createdAt: true } },
 				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
 				createdAt: true,
+				startTime: true,
+				endTime: true,
 			},
 		})
 
@@ -148,10 +152,42 @@ export class ArchiveRepository {
 				testCount: true,
 				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
 				createdAt: true,
+				startTime: true,
+				endTime: true,
+				archiveCollection: {
+					select: {
+						admin: { select: { fullName: true } },
+						amountInTest: true,
+						givenMinutes: true,
+						language: true,
+						maxAttempts: true,
+						name: true,
+						science: { select: { name: true } },
+						questions: {
+							select: {
+								text: true,
+								answers: {
+									select: {
+										isChecked: true,
+										isCorrect: true,
+										text: true,
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		})
 
-		return archive
+		return {
+			...archive,
+			archiveCollection: {
+				...archive.archiveCollection,
+				admin: archive.archiveCollection.admin.fullName,
+				science: archive.archiveCollection.science.name,
+			},
+		}
 	}
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
@@ -167,6 +203,8 @@ export class ArchiveRepository {
 				facultyId: user.userInfo.group.faculty.id,
 				groupId: user.userInfo.group.id,
 				semestrId: user.userInfo?.group.semestr.id,
+				startTime: payload.startTime,
+				endTime: payload.endTime,
 			},
 		})
 
