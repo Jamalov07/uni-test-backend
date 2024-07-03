@@ -1,11 +1,13 @@
 import { CollectionLanguageEnum } from '@prisma/client'
 import { ScienceFindOneResponse } from '../../science'
 import { QuestionFindOneResponse } from '../../question'
+import { AdminFindOneResponse } from '../../admin'
 
 export declare interface CollectionFindFullRequest {
 	name?: string
 	language?: CollectionLanguageEnum
 	scienceId?: string
+	adminId?: string
 }
 
 export declare interface CollectionFindAllRequest {
@@ -14,6 +16,7 @@ export declare interface CollectionFindAllRequest {
 	name?: string
 	language?: CollectionLanguageEnum
 	scienceId?: string
+	adminId?: string
 }
 
 export declare interface CollectionFindOneRequest {
@@ -27,6 +30,7 @@ export declare interface CollectionCreateRequest {
 	maxAttempts: number
 	givenMinutes: number
 	amountInTest: number
+	adminId: string
 }
 
 export declare interface CollectionUpdateRequest {
@@ -36,6 +40,7 @@ export declare interface CollectionUpdateRequest {
 	maxAttempts?: number
 	givenMinutes?: number
 	amountInTest?: number
+	adminId?: string
 }
 
 export declare interface CollectionDeleteRequest {
@@ -62,6 +67,7 @@ export declare interface CollectionFindOneResponse {
 	givenMinutes: number
 	amountInTest: number
 	questions?: QuestionFindOneResponse[]
+	admin?: AdminFindOneResponse
 	createdAt: Date
 }
 
@@ -73,8 +79,9 @@ export declare interface CollectionFindOneWithQuestionAnswers {
 	maxAttempts: number
 	givenMinutes: number
 	amountInTest: number
-	createdAt: Date
+	admin?: AdminFindOneResponse
 	questions: CollectionQuestion[]
+	createdAt: Date
 }
 
 export declare interface CollectionQuestion {

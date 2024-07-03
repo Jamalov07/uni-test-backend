@@ -13,6 +13,7 @@ import {
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { ScienceFindOneResponse, ScienceFindOneResponseDto } from '../../science'
+import { AdminFindOneResponse, AdminFindOneResponseDto } from '../../admin'
 
 export class CollectionFindFullRequestDto implements CollectionFindFullRequest {
 	@ApiPropertyOptional({ example: 'name' })
@@ -29,6 +30,11 @@ export class CollectionFindFullRequestDto implements CollectionFindFullRequest {
 	@IsEnum($Enums.CollectionLanguageEnum)
 	@IsOptional()
 	language?: $Enums.CollectionLanguageEnum
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	adminId?: string
 }
 
 export class CollectionFindAllRequestDto implements CollectionFindAllRequest {
@@ -56,6 +62,11 @@ export class CollectionFindAllRequestDto implements CollectionFindAllRequest {
 	@IsEnum($Enums.CollectionLanguageEnum)
 	@IsOptional()
 	language?: $Enums.CollectionLanguageEnum
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	adminId?: string
 }
 
 export class CollectionFindOneRequestDto implements CollectionFindOneRequest {
@@ -101,6 +112,11 @@ export class CollectionCreateRequestDto implements CollectionCreateRequest {
 	@IsNotEmpty()
 	@Type(() => Number)
 	maxAttempts: number
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	adminId: string
 }
 
 export class CollectionUpdateRequestDto implements CollectionUpdateRequest {
@@ -133,6 +149,11 @@ export class CollectionUpdateRequestDto implements CollectionUpdateRequest {
 	@IsNumber()
 	@IsOptional()
 	maxAttempts?: number
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	adminId?: string
 }
 
 export class CollectionDeleteRequestDto implements CollectionDeleteRequest {
@@ -166,6 +187,9 @@ export class CollectionFindFullResponseDto implements CollectionFindOneResponse 
 	@ApiProperty({ type: ScienceFindOneResponseDto })
 	science: ScienceFindOneResponse
 
+	@ApiPropertyOptional({ type: AdminFindOneResponseDto })
+	admin?: AdminFindOneResponse
+
 	@ApiProperty({ example: new Date() })
 	createdAt: Date
 }
@@ -191,6 +215,9 @@ export class CollectionFindOneResponseDto implements CollectionFindOneResponse {
 
 	@ApiProperty({ type: ScienceFindOneResponseDto })
 	science: ScienceFindOneResponse
+
+	@ApiPropertyOptional({ type: AdminFindOneResponseDto })
+	admin?: AdminFindOneResponse
 
 	@ApiProperty({ example: new Date() })
 	createdAt: Date

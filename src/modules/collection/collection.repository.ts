@@ -31,7 +31,6 @@ export class CollectionRepository {
 				scienceId: payload.scienceId,
 				deletedAt: null,
 			},
-
 			select: {
 				id: true,
 				language: true,
@@ -41,6 +40,7 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, createdAt: true } },
+				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
 		})
 
@@ -66,6 +66,7 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, createdAt: true } },
+				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
 		})
 
@@ -98,6 +99,7 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, createdAt: true } },
+				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
 		})
 
@@ -116,6 +118,7 @@ export class CollectionRepository {
 				givenMinutes: true,
 				amountInTest: true,
 				science: { select: { id: true, name: true, createdAt: true } },
+				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
 		})
 		return collection
@@ -132,6 +135,7 @@ export class CollectionRepository {
 				givenMinutes: true,
 				maxAttempts: true,
 				science: { select: { id: true, name: true, createdAt: true } },
+				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 				createdAt: true,
 				questions: {
 					select: {
@@ -163,6 +167,7 @@ export class CollectionRepository {
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
+				adminId: payload.adminId,
 			},
 		})
 		return null
@@ -177,7 +182,7 @@ export class CollectionRepository {
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
-				deletedAt: null,
+				adminId: payload.adminId,
 			},
 		})
 		return collection.id
@@ -193,6 +198,7 @@ export class CollectionRepository {
 				language: payload.language,
 				maxAttempts: payload.maxAttempts,
 				scienceId: payload.scienceId,
+				adminId: payload.adminId,
 			},
 		})
 		return null
