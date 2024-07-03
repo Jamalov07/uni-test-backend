@@ -56,6 +56,7 @@ export class ArchiveService {
 		} else {
 			await this.userCollectionRepository.update({ id: userCollection.id, haveAttempt: userCollection.haveAttempt - 1 })
 		}
+
 		return null
 	}
 

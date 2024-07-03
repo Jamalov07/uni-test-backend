@@ -15,6 +15,7 @@ import {
 } from './interfaces'
 import { UserService } from '../user'
 import { CollectionService } from '../collection'
+import { CollectionLanguageEnum } from '@prisma/client'
 
 @Injectable()
 export class ArchiveRepository {
@@ -156,7 +157,7 @@ export class ArchiveRepository {
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
 		const user = await this.userService.findOne({ id: payload.userId })
 		const collection = await this.collectionService.findOne({ id: payload.collectionId })
-		await this.prisma.archive.create({
+		const archive = await this.prisma.archive.create({
 			data: {
 				result: payload.result,
 				userId: payload.userId,
@@ -167,6 +168,33 @@ export class ArchiveRepository {
 				groupId: user.userInfo.group.id,
 				semestrId: user.userInfo?.group.semestr.id,
 			},
+		})
+
+		const archiveCollection = await this.prisma.archiveCollection.create({
+			data: {
+				archiveId: archive.id,
+				amountInTest: collection.amountInTest,
+				givenMinutes: collection.givenMinutes,
+				language: collection.language as CollectionLanguageEnum,
+				maxAttempts: collection.maxAttempts,
+				name: collection.name,
+				adminId: collection.admin.id,
+				scienceId: collection.science.id,
+			},
+		})
+
+		payload.collection.questions.map(async (q) => {
+			await this.prisma.archiveQuestion.create({
+				data: {
+					text: q.text,
+					collectionId: archiveCollection.id,
+					answers: {
+						createMany: {
+							data: q.answers,
+						},
+					},
+				},
+			})
 		})
 
 		return null

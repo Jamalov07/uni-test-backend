@@ -33,6 +33,7 @@ export declare interface ArchiveCreateRequest {
 	result: number
 	userId: string
 	collectionId: string
+	collection: ArchiveCollection
 }
 
 export declare interface ArchiveUpdateRequest {
@@ -72,3 +73,19 @@ export declare type ArchiveCreateResponse = null
 export declare type ArchiveUpdateResponse = null
 
 export declare type ArchiveDeleteResponse = null
+
+export declare interface ArchiveCollection {
+	id: string
+	questions: CollectionQuestion[]
+}
+
+export declare interface CollectionQuestion {
+	text: string
+	answers: QuestionAnswer[]
+}
+
+export declare interface QuestionAnswer {
+	text: string
+	isChecked: boolean
+	isCorrect: boolean
+}

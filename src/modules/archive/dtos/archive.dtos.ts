@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+	ArchiveCollection,
 	ArchiveCreateRequest,
 	ArchiveDeleteRequest,
 	ArchiveFindAllRequest,
@@ -8,14 +9,17 @@ import {
 	ArchiveFindOneRequest,
 	ArchiveFindOneResponse,
 	ArchiveUpdateRequest,
+	CollectionQuestion,
+	QuestionAnswer,
 } from '../interfaces'
-import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator'
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
 import { UserFindOneResponse, UserFindOneResponseDto } from '../../user'
 import { CourseFindOneResponse, CourseFindOneResponseDto } from '../../course'
 import { SemestrFindOneResponse, SemestrFindOneResponseDto } from '../../semestr'
+import { Type } from 'class-transformer'
 
 export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
 	@ApiPropertyOptional({ example: 'uuid' })
@@ -98,6 +102,49 @@ export class ArchiveFindOneRequestDto implements ArchiveFindOneRequest {
 	id: string
 }
 
+export class QuestionAnswerDto implements QuestionAnswer {
+	@ApiProperty({ example: true })
+	@IsBoolean()
+	@IsNotEmpty()
+	isChecked: boolean
+
+	@ApiProperty({ example: true })
+	@IsBoolean()
+	@IsNotEmpty()
+	isCorrect: boolean
+
+	@ApiProperty({ example: 'toshkent' })
+	@IsString()
+	@IsNotEmpty()
+	text: string
+}
+
+export class CollectionQuestionDto implements CollectionQuestion {
+	@ApiProperty({ example: 'uzb poytaxti?' })
+	@IsString()
+	@IsNotEmpty()
+	text: string
+
+	@ApiProperty({ type: QuestionAnswerDto, isArray: true })
+	@IsArray()
+	@IsNotEmpty()
+	@Type(() => QuestionAnswerDto)
+	answers: QuestionAnswer[]
+}
+
+export class ArchiveCollectionDto implements ArchiveCollection {
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	id: string
+
+	@ApiProperty({ type: CollectionQuestionDto, isArray: true })
+	@IsArray()
+	@IsNotEmpty()
+	@Type(() => CollectionQuestionDto)
+	questions: CollectionQuestion[]
+}
+
 export class ArchiveCreateRequestDto implements ArchiveCreateRequest {
 	@ApiProperty({ example: 'uuid' })
 	@IsUUID('4')
@@ -113,6 +160,11 @@ export class ArchiveCreateRequestDto implements ArchiveCreateRequest {
 	@IsUUID('4')
 	@IsNotEmpty()
 	userId: string
+
+	@ApiProperty({ type: ArchiveCollectionDto })
+	@IsNotEmpty()
+	@Type(() => ArchiveCollectionDto)
+	collection: ArchiveCollection
 }
 
 export class ArchiveUpdateRequestDto implements ArchiveUpdateRequest {
