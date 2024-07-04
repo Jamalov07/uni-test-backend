@@ -15,7 +15,7 @@ import {
 	CollectionQuestion,
 	QuestionAnswer,
 } from '../interfaces'
-import { IsArray, IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsArray, IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { CollectionFindOneResponse, CollectionFindOneResponseDto } from '../../collection'
 import { FacultyFindOneResponse, FacultyFindOneResponseDto } from '../../faculty'
 import { GroupFindOneResponse, GroupFindOneResponseDto } from '../../group'
@@ -170,12 +170,12 @@ export class ArchiveCreateRequestDto implements ArchiveCreateRequest {
 	collection: ArchiveCollection
 
 	@ApiProperty({ example: new Date() })
-	@IsDate()
+	@IsDateString()
 	@IsNotEmpty()
 	endTime: Date
 
 	@ApiProperty({ example: new Date() })
-	@IsDate()
+	@IsDateString()
 	@IsNotEmpty()
 	startTime: Date
 }
