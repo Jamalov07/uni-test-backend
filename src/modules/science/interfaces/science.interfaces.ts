@@ -87,3 +87,21 @@ export declare type ScienceCreateResponse = null
 export declare type ScienceUpdateResponse = null
 
 export declare type ScienceDeleteResponse = null
+
+export declare interface ScienceFindOnwWithUserCollectionRequest {
+	userId?: string
+}
+
+export declare interface ScienceFindOneWithUserCollection {
+	name: string
+	collections: ScienceUserCollection[]
+}
+
+export declare interface ScienceUserCollection {
+	name: string
+	language: string
+	maxAttempts: number
+	givenMinutes: number
+	amountInTest: number
+	haveAttempt: number
+}

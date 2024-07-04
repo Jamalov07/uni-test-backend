@@ -12,6 +12,8 @@ import {
 	ScienceFindFullResponse,
 	ScienceFindOneRequest,
 	ScienceFindOneResponse,
+	ScienceFindOneWithUserCollection,
+	ScienceFindOnwWithUserCollectionRequest,
 	ScienceUpdateRequest,
 } from './interfaces'
 
@@ -126,5 +128,31 @@ export class ScienceRepository {
 		})
 
 		return sciences
+	}
+
+	async findAllWithUserCollection(payload: ScienceFindOnwWithUserCollectionRequest): Promise<ScienceFindOneWithUserCollection[]> {
+		const sciences = await this.prisma.science.findMany({
+			where: { deletedAt: null, collections: { some: { userCollectiona: { some: { userId: payload.userId } } } } },
+			select: {
+				name: true,
+				collections: {
+					select: { amountInTest: true, givenMinutes: true, name: true, maxAttempts: true, language: true, userCollectiona: { select: { haveAttempt: true } } },
+				},
+			},
+		})
+
+		const mappedS = sciences.map((s) => {
+			const sc = {
+				name: s.name,
+				collections: s.collections.map((c) => {
+					return {
+						...c,
+						haveAttempt: c.userCollectiona[0].haveAttempt,
+					}
+				}),
+			}
+			return sc
+		})
+		return mappedS
 	}
 }

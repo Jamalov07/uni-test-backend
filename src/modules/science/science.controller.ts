@@ -12,6 +12,8 @@ import {
 	ScienceFindAllResponseDto,
 	ScienceFindOneResponseDto,
 	ScienceFindFullForArchiveDto,
+	ScienceFindOneWithUserCollectionDto,
+	ScienceFindOnwWithUserCollectionRequestDto,
 } from './dtos'
 import {
 	ScienceCreateResponse,
@@ -20,6 +22,7 @@ import {
 	ScienceFindFullForArchive,
 	ScienceFindFullResponse,
 	ScienceFindOneResponse,
+	ScienceFindOneWithUserCollection,
 	ScienceUpdateResponse,
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
@@ -47,6 +50,12 @@ export class ScienceController {
 	@ApiResponse({ type: ScienceFindAllResponseDto })
 	findAll(@Query() payload: ScienceFindAllRequestDto): Promise<ScienceFindAllResponse> {
 		return this.service.findAll({ ...payload, pageSize: PAGE_SIZE, pageNumber: PAGE_NUMBER })
+	}
+
+	@Get('with-collection')
+	@ApiResponse({ type: ScienceFindOneWithUserCollectionDto, isArray: true })
+	findAllWithUserCollection(@Query() payload: ScienceFindOnwWithUserCollectionRequestDto): Promise<ScienceFindOneWithUserCollection[]> {
+		return this.service.findAllWithUserCollection(payload)
 	}
 
 	@Get('for-archive')

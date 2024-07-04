@@ -13,7 +13,10 @@ import {
 	ScienceFindFullRequest,
 	ScienceFindOneRequest,
 	ScienceFindOneResponse,
+	ScienceFindOneWithUserCollection,
+	ScienceFindOnwWithUserCollectionRequest,
 	ScienceUpdateRequest,
+	ScienceUserCollection,
 } from '../interfaces'
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 
@@ -178,4 +181,39 @@ export class ScienceFindFullForArchiveDto implements ScienceFindFullForArchive {
 
 	@ApiProperty({ type: ScienceCollectionDto, isArray: true })
 	collections: ScienceCollection[]
+}
+
+export class ScienceFindOnwWithUserCollectionRequestDto implements ScienceFindOnwWithUserCollectionRequest {
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	userId?: string
+}
+
+export class ScienceUserCollectionDto implements ScienceUserCollection {
+	@ApiProperty({ example: 20 })
+	amountInTest: number
+
+	@ApiProperty({ example: 20 })
+	givenMinutes: number
+
+	@ApiProperty({ example: 20 })
+	haveAttempt: number
+
+	@ApiProperty({ example: 'uz' })
+	language: string
+
+	@ApiProperty({ example: 20 })
+	maxAttempts: number
+
+	@ApiProperty({ example: 'name' })
+	name: string
+}
+
+export class ScienceFindOneWithUserCollectionDto implements ScienceFindOneWithUserCollection {
+	@ApiProperty({ example: 'name' })
+	name: string
+
+	@ApiProperty({ type: ScienceUserCollectionDto, isArray: true })
+	collections: ScienceUserCollection[]
 }

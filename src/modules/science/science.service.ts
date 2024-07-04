@@ -12,6 +12,8 @@ import {
 	ScienceFindFullResponse,
 	ScienceFindOneRequest,
 	ScienceFindOneResponse,
+	ScienceFindOneWithUserCollection,
+	ScienceFindOnwWithUserCollectionRequest,
 	ScienceUpdateRequest,
 	ScienceUpdateResponse,
 } from './interfaces'
@@ -71,5 +73,9 @@ export class ScienceService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async findAllWithUserCollection(payload: ScienceFindOnwWithUserCollectionRequest): Promise<ScienceFindOneWithUserCollection[]> {
+		return this.repository.findAllWithUserCollection(payload)
 	}
 }
