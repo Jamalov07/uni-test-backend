@@ -89,7 +89,7 @@ export class UserService {
 		const password = await bcrypt.hash(payload.password, 7)
 		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
 		const userId = await this.repository.createWithReturningId({ ...payload, password: password })
-		payload.userInfo ? await this.userInfoService.create({ ...payload.userInfo, userId: userId }) : null
+		await this.userInfoService.create({ groupId: payload.groupId, hemisId: payload.hemisId, userId: userId })
 
 		return null
 	}

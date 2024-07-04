@@ -14,9 +14,9 @@ import {
 	UserUpdateRequest,
 	UserCreateWithJsonFileRequest,
 } from '../interfaces'
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { $Enums } from '@prisma/client'
-import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoFindOneResponseDto, UserInfoWithOutUserIdDto } from '../../user-info'
+import { UserInfoFindOneResponse, UserInfoFindOneResponseDto } from '../../user-info'
 import { Type } from 'class-transformer'
 
 export class UserFindFullRequestDto implements UserFindFullRequest {
@@ -98,11 +98,6 @@ export class UserCreateRequestDto implements UserCreateRequest {
 	@IsNotEmpty()
 	password: string
 
-	// @ApiProperty({ example: 'link' })
-	// @IsString()
-	// @IsOptional()
-	// image?: string
-
 	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
 	image?: any
 
@@ -133,17 +128,18 @@ export class UserCreateWithInfoRequestDto implements UserCreateWithInfoRequest {
 	@IsNotEmpty()
 	type: $Enums.UserTypeEnum
 
-	// @ApiProperty({ example: 'link' })
-	// @IsString()
-	// @IsOptional()
-	// image?: string
 	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
 	image?: any
 
-	@ApiPropertyOptional({ type: UserInfoWithOutUserIdDto })
-	@IsObject()
-	@IsOptional()
-	userInfo?: Omit<UserInfoCreateRequest, 'userId'>
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	groupId: string
+
+	@ApiProperty({ example: 'hemisid' })
+	@IsString()
+	@IsNotEmpty()
+	hemisId: string
 }
 
 export class UserCreateManyWithJsonFileDto implements UserCreateWithJsonFileRequest {

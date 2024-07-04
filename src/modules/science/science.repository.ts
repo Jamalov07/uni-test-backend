@@ -132,8 +132,9 @@ export class ScienceRepository {
 
 	async findAllWithUserCollection(payload: ScienceFindOnwWithUserCollectionRequest): Promise<ScienceFindOneWithUserCollection[]> {
 		const sciences = await this.prisma.science.findMany({
-			where: { deletedAt: null, collections: { some: { userCollectiona: { some: { userId: payload.userId } } } } },
+			where: { deletedAt: null, collections: { some: { userCollectiona: { some: { userId: payload.userId, deletedAt: null, haveAttempt: { gt: 0 } } } } } },
 			select: {
+				id: true,
 				name: true,
 				collections: {
 					select: { amountInTest: true, givenMinutes: true, name: true, maxAttempts: true, language: true, userCollectiona: { select: { haveAttempt: true } } },
@@ -143,6 +144,7 @@ export class ScienceRepository {
 
 		const mappedS = sciences.map((s) => {
 			const sc = {
+				id: s.id,
 				name: s.name,
 				collections: s.collections.map((c) => {
 					return {

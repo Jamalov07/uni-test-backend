@@ -136,11 +136,6 @@ export class CollectionQuestionDto implements CollectionQuestion {
 }
 
 export class ArchiveCollectionDto implements ArchiveCollection {
-	@ApiProperty({ example: 'uuid' })
-	@IsUUID('4')
-	@IsNotEmpty()
-	id: string
-
 	@ApiProperty({ type: CollectionQuestionDto, isArray: true })
 	@IsArray()
 	@IsNotEmpty()

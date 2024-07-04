@@ -32,7 +32,7 @@ export declare interface UserCreateRequest {
 	emailAddress?: string
 }
 
-export declare type UserCreateWithInfoRequest = UserCreateRequest & { userInfo?: Omit<UserInfoCreateRequest, 'userId'> }
+export declare type UserCreateWithInfoRequest = UserCreateRequest & Omit<UserInfoCreateRequest, 'userId'>
 
 export declare interface UserCreateWithJsonFileRequest {
 	full_name: string

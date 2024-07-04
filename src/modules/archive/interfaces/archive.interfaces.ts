@@ -102,7 +102,6 @@ export declare type ArchiveUpdateResponse = null
 export declare type ArchiveDeleteResponse = null
 
 export declare interface ArchiveCollection {
-	id: string
 	questions: CollectionQuestion[]
 }
 

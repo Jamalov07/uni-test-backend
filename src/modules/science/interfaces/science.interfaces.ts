@@ -93,6 +93,7 @@ export declare interface ScienceFindOnwWithUserCollectionRequest {
 }
 
 export declare interface ScienceFindOneWithUserCollection {
+	id: string
 	name: string
 	collections: ScienceUserCollection[]
 }

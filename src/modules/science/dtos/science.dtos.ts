@@ -211,6 +211,9 @@ export class ScienceUserCollectionDto implements ScienceUserCollection {
 }
 
 export class ScienceFindOneWithUserCollectionDto implements ScienceFindOneWithUserCollection {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
 	@ApiProperty({ example: 'name' })
 	name: string
 
