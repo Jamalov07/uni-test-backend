@@ -144,6 +144,7 @@ export class ScienceRepository {
 						maxAttempts: true,
 						language: true,
 						userCollectiona: {
+							where: { userId: payload.userId },
 							select: {
 								haveAttempt: true,
 								user: {
