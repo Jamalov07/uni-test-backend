@@ -46,6 +46,7 @@ export class ArchiveService {
 
 	async create(payload: ArchiveCreateRequest): Promise<ArchiveCreateResponse> {
 		const userCollection = await this.userCollectionRepository.findByUserCollection({ collectionId: payload.collectionId, userId: payload.userId })
+		console.log('userCollec', userCollection)
 		if (!userCollection || !userCollection.haveAttempt) {
 			throw new BadRequestException("You haven't attempt for this collection")
 		}
