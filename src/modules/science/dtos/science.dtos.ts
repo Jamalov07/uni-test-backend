@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
 	ScienceCollection,
+	ScienceCollection2,
 	ScienceCollectionArchive,
 	ScienceCollectionArchiveCourse,
 	ScienceCollectionArchiveFaculty,
@@ -191,14 +192,18 @@ export class ScienceFindOnwWithUserCollectionRequestDto implements ScienceFindOn
 }
 
 export class ScienceUserCollectionDto implements ScienceUserCollection {
+	@ApiProperty({ example: { id: 'uuid', name: 'john doe' }, isArray: true })
+	user: { id: string; fullName: string }
+
+	@ApiProperty({ example: 2 })
+	haveAttempt: number
+}
+export class ScienceCollection2Dto implements ScienceCollection2 {
 	@ApiProperty({ example: 20 })
 	amountInTest: number
 
 	@ApiProperty({ example: 20 })
 	givenMinutes: number
-
-	@ApiProperty({ example: 20 })
-	haveAttempt: number
 
 	@ApiProperty({ example: 'uz' })
 	language: string
@@ -208,6 +213,9 @@ export class ScienceUserCollectionDto implements ScienceUserCollection {
 
 	@ApiProperty({ example: 'name' })
 	name: string
+
+	@ApiProperty({ type: ScienceUserCollectionDto, isArray: true })
+	userCollections: ScienceUserCollection[]
 }
 
 export class ScienceFindOneWithUserCollectionDto implements ScienceFindOneWithUserCollection {
@@ -217,6 +225,6 @@ export class ScienceFindOneWithUserCollectionDto implements ScienceFindOneWithUs
 	@ApiProperty({ example: 'name' })
 	name: string
 
-	@ApiProperty({ type: ScienceUserCollectionDto, isArray: true })
-	collections: ScienceUserCollection[]
+	@ApiProperty({ type: ScienceCollection2Dto, isArray: true })
+	collections: ScienceCollection2[]
 }

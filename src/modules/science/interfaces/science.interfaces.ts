@@ -95,14 +95,19 @@ export declare interface ScienceFindOnwWithUserCollectionRequest {
 export declare interface ScienceFindOneWithUserCollection {
 	id: string
 	name: string
-	collections: ScienceUserCollection[]
+	collections: ScienceCollection2[]
 }
 
-export declare interface ScienceUserCollection {
+export declare interface ScienceCollection2 {
 	name: string
 	language: string
 	maxAttempts: number
 	givenMinutes: number
 	amountInTest: number
+	userCollections: ScienceUserCollection[]
+}
+
+export declare interface ScienceUserCollection {
+	user: { id: string; fullName: string }
 	haveAttempt: number
 }

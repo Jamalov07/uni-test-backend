@@ -137,7 +137,21 @@ export class ScienceRepository {
 				id: true,
 				name: true,
 				collections: {
-					select: { amountInTest: true, givenMinutes: true, name: true, maxAttempts: true, language: true, userCollectiona: { select: { haveAttempt: true } } },
+					select: {
+						amountInTest: true,
+						givenMinutes: true,
+						name: true,
+						maxAttempts: true,
+						language: true,
+						userCollectiona: {
+							select: {
+								haveAttempt: true,
+								user: {
+									select: { fullName: true, id: true },
+								},
+							},
+						},
+					},
 				},
 			},
 		})
@@ -147,10 +161,16 @@ export class ScienceRepository {
 				id: s.id,
 				name: s.name,
 				collections: s.collections.map((c) => {
-					return {
-						...c,
-						haveAttempt: c.userCollectiona[0].haveAttempt,
+					const co = {
+						amountInTest: c.amountInTest,
+						givenMinutes: c.givenMinutes,
+						name: c.name,
+						maxAttempts: c.maxAttempts,
+						language: c.language,
+						userCollections: c.userCollectiona,
 					}
+
+					return co
 				}),
 			}
 			return sc
