@@ -159,10 +159,8 @@ export class ScienceRepository {
 		})
 
 		const mappedS = sciences.map((s) => {
-			const sc = {
-				id: s.id,
-				name: s.name,
-				collections: s.collections.map((c) => {
+			const collections = s.collections
+				.map((c) => {
 					const co = {
 						id: c.id,
 						amountInTest: c.amountInTest,
@@ -174,7 +172,13 @@ export class ScienceRepository {
 					}
 
 					return co
-				}),
+				})
+				.filter((c) => c.userCollections.length)
+
+			const sc = {
+				id: s.id,
+				name: s.name,
+				collections: collections,
 			}
 			return sc
 		})
