@@ -99,6 +99,7 @@ export declare interface ScienceFindOneWithUserCollection {
 }
 
 export declare interface ScienceCollection2 {
+	id: string
 	name: string
 	language: string
 	maxAttempts: number

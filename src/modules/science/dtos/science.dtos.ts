@@ -199,6 +199,9 @@ export class ScienceUserCollectionDto implements ScienceUserCollection {
 	haveAttempt: number
 }
 export class ScienceCollection2Dto implements ScienceCollection2 {
+	@ApiProperty({ example: 'uuid' })
+	id: string
+
 	@ApiProperty({ example: 20 })
 	amountInTest: number
 

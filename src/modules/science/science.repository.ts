@@ -138,6 +138,7 @@ export class ScienceRepository {
 				name: true,
 				collections: {
 					select: {
+						id: true,
 						amountInTest: true,
 						givenMinutes: true,
 						name: true,
@@ -163,6 +164,7 @@ export class ScienceRepository {
 				name: s.name,
 				collections: s.collections.map((c) => {
 					const co = {
+						id: c.id,
 						amountInTest: c.amountInTest,
 						givenMinutes: c.givenMinutes,
 						name: c.name,
