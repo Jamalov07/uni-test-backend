@@ -54,8 +54,8 @@ export class ScienceController {
 
 	@Get('with-collection')
 	@ApiResponse({ type: ScienceFindOneWithUserCollectionDto, isArray: true })
-	findAllWithUserCollection(@Query() payload: ScienceFindOnwWithUserCollectionRequestDto): Promise<ScienceFindOneWithUserCollection[]> {
-		return this.service.findAllWithUserCollection(payload)
+	findAllWithUserCollection(@UserIdInAccessToken() id: string, @Query() payload: ScienceFindOnwWithUserCollectionRequestDto): Promise<ScienceFindOneWithUserCollection[]> {
+		return this.service.findAllWithUserCollection({ ...payload, userId: payload.userId ?? id })
 	}
 
 	@Get('for-archive')
