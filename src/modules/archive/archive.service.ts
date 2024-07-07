@@ -91,8 +91,8 @@ export class ArchiveService {
 				a.group.name,
 				a.collection.science.name,
 				a.collection.name,
-				a.startTime,
-				a.endTime,
+				this.formatDate(a.startTime),
+				this.formatDate(a.endTime),
 				a.testCount,
 				a.result,
 			]
@@ -111,7 +111,7 @@ export class ArchiveService {
 
 		const table = [
 			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
-			// [0, 'Qodirov Jahongir', 'Bugalteriya', 1, 1, 'Buxgalteriya ishi', 'Tarix', 'Tarix yakuniy test', new Date(), new Date(), 10, 5],
+			// [0, 'Qodirov Jahongir', 'Bugalteriya', 1, 1, 'Buxgalteriya ishi', 'Tarix', 'Tarix yakuniy test', this.formatDate(new Date()), this.formatDate(new Date()), 10, 5],
 			...mappedArchives,
 		]
 
@@ -151,5 +151,18 @@ export class ArchiveService {
 		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 		res.write(buffer)
 		res.end()
+	}
+
+	formatDate(date: any) {
+		const options = {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false,
+		}
+
+		return date.toLocaleString('en-GB', options).replace(',', '')
 	}
 }
