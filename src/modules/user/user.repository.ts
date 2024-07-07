@@ -36,7 +36,31 @@ export class UserRepository {
 				type: payload.type,
 				deletedAt: null,
 			},
-			select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true },
+			select: {
+				id: true,
+				createdAt: true,
+				fullName: true,
+				emailAddress: true,
+				image: true,
+				type: true,
+				userInfo: {
+					select: {
+						hemisId: true,
+						group: {
+							select: {
+								id: true,
+								course: { select: { id: true, stage: true, createdAt: true } },
+								faculty: { select: { id: true, name: true, createdAt: true } },
+								semestr: { select: { id: true, stage: true, createdAt: true } },
+								name: true,
+								createdAt: true,
+							},
+						},
+						id: true,
+						createdAt: true,
+					},
+				},
+			},
 		})
 
 		return users
