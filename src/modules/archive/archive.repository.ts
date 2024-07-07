@@ -69,6 +69,46 @@ export class ArchiveRepository {
 		return archives
 	}
 
+	async findFullForExcel(payload: ArchiveFindFullRequest): Promise<ArchiveFindFullResponse> {
+		const archives = await this.prisma.archive.findMany({
+			where: {
+				collectionId: payload.collectionId,
+				courseId: payload.courseId,
+				facultyId: payload.facultyId,
+				userId: payload.userId,
+				groupId: payload.groupId,
+				deletedAt: null,
+			},
+			select: {
+				id: true,
+				collection: {
+					select: {
+						id: true,
+						language: true,
+						createdAt: true,
+						name: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+						science: { select: { id: true, name: true, createdAt: true } },
+					},
+				},
+				course: { select: { id: true, stage: true, createdAt: true } },
+				faculty: { select: { id: true, name: true, createdAt: true } },
+				group: { select: { id: true, name: true, createdAt: true } },
+				semestr: { select: { id: true, stage: true, createdAt: true } },
+				result: true,
+				testCount: true,
+				user: { select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true } },
+				createdAt: true,
+				startTime: true,
+				endTime: true,
+			},
+		})
+
+		return archives
+	}
+
 	async findAll(payload: ArchiveFindAllRequest): Promise<ArchiveFindAllResponse> {
 		const archives = await this.prisma.archive.findMany({
 			skip: (payload.pageNumber - 1) * payload.pageSize,

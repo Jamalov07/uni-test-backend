@@ -15,7 +15,8 @@ import {
 	ArchiveUpdateResponse,
 } from './interfaces'
 import { UserCollectionRepository } from '../user-collection'
-
+import * as ExcelJs from 'exceljs'
+import { Response } from 'express'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
@@ -72,5 +73,83 @@ export class ArchiveService {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
 		return null
+	}
+
+	async downloadInExcel(payload: ArchiveFindFullRequest, res: Response): Promise<void> {
+		const archives = await this.repository.findFullForExcel(payload)
+
+		const workbook = new ExcelJs.Workbook()
+		const worksheet = workbook.addWorksheet('results')
+
+		const mappedArchives = archives.map((a, i) => {
+			return [
+				i + 1,
+				a.user.fullName,
+				a.faculty.name,
+				a.course.stage,
+				a.semestr.stage,
+				a.group.name,
+				a.collection.science.name,
+				a.collection.name,
+				a.startTime,
+				a.endTime,
+				a.testCount,
+				a.result,
+			]
+		})
+
+		const headerCellStyle = {
+			fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: '000000' } },
+			font: { color: { argb: 'FFFFFF' } },
+			border: {
+				top: { style: 'thin', color: { argb: 'FFFFFF' } },
+				left: { style: 'thin', color: { argb: 'FFFFFF' } },
+				bottom: { style: 'thin', color: { argb: 'FFFFFF' } },
+				right: { style: 'thin', color: { argb: 'FFFFFF' } },
+			},
+		}
+
+		const table = [
+			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			// [0, 'Qodirov Jahongir', 'Bugalteriya', 1, 1, 'Buxgalteriya ishi', 'Tarix', 'Tarix yakuniy test', new Date(), new Date(), 10, 5],
+			...mappedArchives,
+		]
+
+		table.forEach((row, index) => {
+			worksheet.addRow(row)
+			if (index === 0) {
+				const header = worksheet.getRow(index + 1)
+				header.eachCell((cell) => {
+					cell.style = headerCellStyle as ExcelJs.Style
+				})
+			}
+		})
+
+		workbook.eachSheet((worksheet) => {
+			worksheet.eachRow((row) => {
+				row.alignment = { wrapText: true, horizontal: 'center', vertical: 'middle' }
+			})
+
+			worksheet.views = [
+				{
+					state: 'frozen',
+					ySplit: 1,
+					xSplit: 2,
+				},
+			]
+			worksheet.columns.forEach((column, i) => {
+				if (i == 0) {
+					column.width = 10
+				} else {
+					column.width = 20
+				}
+			})
+		})
+
+		const buffer = await workbook.xlsx.writeBuffer()
+		res.setHeader('Content-Disposition', 'attachment; filename="archives.xlsx"')
+		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+		res.write(buffer)
+		res.end()
 	}
 }

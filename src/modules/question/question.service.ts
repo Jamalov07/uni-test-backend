@@ -65,6 +65,49 @@ export class QuestionService {
 	async createManyWithAnswers(payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>, text: string): Promise<QuestionsCreateWithAnswersResponse> {
 		const qwa: QuestionsCreateWithAnswersRequest = { collectionId: payload.collectionId, questions: [] }
 		const questions = text
+			.split('#')
+			.map((q) => q.trim())
+			.filter((q) => q.toString())
+
+		for (const q of questions) {
+			const questionWithAnswers = q
+				.split('\n')
+				.map((w) => w.trim())
+				.filter((w) => w.toString())
+
+			const isExistTrueAnswer = questionWithAnswers
+				.slice(1)
+				.map((t) => t[0])
+				.includes('+')
+
+			if (!isExistTrueAnswer) {
+				await this.repository.deleteCollection({ id: payload.collectionId })
+				throw new BadRequestException(`Savolga to'g'ri javob berilmagan: ${questionWithAnswers[0]}`)
+			}
+
+			qwa.questions.push({
+				text: questionWithAnswers[0],
+				answers: questionWithAnswers
+					.map((q, i): any => {
+						const isCorrect = q[0] === '+' ? true : false
+						if (i !== 0) {
+							return { isCorrect: isCorrect, text: q.slice(1).trim() }
+						}
+					})
+					.slice(1),
+			})
+		}
+
+		await this.findManyByTextsWithCollectionId({ collectionId: payload.collectionId, texts: qwa.questions.map((q) => q.text) })
+
+		await this.repository.createWithAnswers({ ...qwa })
+
+		return null
+	}
+
+	async createManyWithAnswers2(payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>, text: string): Promise<QuestionsCreateWithAnswersResponse> {
+		const qwa: QuestionsCreateWithAnswersRequest = { collectionId: payload.collectionId, questions: [] }
+		const questions = text
 			.split('S:')
 			.map((q) => q.trim())
 			.filter((q) => q.toString())
@@ -75,7 +118,6 @@ export class QuestionService {
 				.map((w) => w.trim())
 				.filter((w) => w.toString())
 
-			// console.log(questionWithAnswers, questionWithAnswers.length - 1, this.countOccurrences(q, 'J:'))
 			if (questionWithAnswers.length - 1 !== this.countOccurrences(q, 'J:')) {
 				throw new BadRequestException('Error with this question ' + q)
 			} else {

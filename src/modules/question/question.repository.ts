@@ -145,4 +145,9 @@ export class QuestionRepository {
 		await this.prisma.question.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
+
+	async deleteCollection(payload: { id: string }): Promise<null> {
+		await this.prisma.collection.delete({ where: { id: payload.id, deletedAt: null } })
+		return null
+	}
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Res, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ArchiveService } from './archive.service'
 import {
@@ -16,6 +16,7 @@ import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, A
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
 import { Roles } from '../../decorators'
+import { Response } from 'express'
 
 @ApiTags('Archive')
 @UseGuards(CheckAuthGuard)
@@ -33,6 +34,13 @@ export class ArchiveController {
 	@ApiResponse({ type: ArchiveFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: ArchiveFindFullRequestDto): Promise<ArchiveFindFullResponse> {
 		return this.service.findFull(payload)
+	}
+
+	@Get('excel')
+	@Roles('admin', 'student')
+	@ApiResponse({ type: null })
+	findFullInExcel(@Query() payload: ArchiveFindFullRequestDto, @Res() res: Response): Promise<void> {
+		return this.service.downloadInExcel(payload, res)
 	}
 
 	@Get('all')
