@@ -23,6 +23,7 @@ import {
 } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
 import { CheckAuthGuard } from '../../guards'
+import { UserIdInAccessToken } from '../../decorators'
 
 @ApiTags('UserCollection')
 @UseGuards(CheckAuthGuard)
@@ -35,10 +36,16 @@ export class UserCollectionController {
 		this.service = service
 	}
 
-	@Get('full')
+	@Get()
 	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
 	findFull(@Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
 		return this.service.findFull(payload)
+	}
+
+	@Get('full')
+	@ApiResponse({ type: UserCollectionFindFullResponseDto, isArray: true })
+	findFullForUser(@UserIdInAccessToken() id: string, @Query() payload: UserCollectionFindFullRequestDto): Promise<UserCollectionFindFullResponse> {
+		return this.service.findFull({ ...payload, userId: id })
 	}
 
 	@Get('all')

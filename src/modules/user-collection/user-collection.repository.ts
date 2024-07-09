@@ -29,7 +29,18 @@ export class UserCollectionRepository {
 			select: {
 				id: true,
 				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
-				collection: { select: { id: true, name: true, createdAt: true, language: true, maxAttempts: true, givenMinutes: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						language: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+						science: { select: { id: true, name: true, createdAt: true } },
+					},
+				},
 				haveAttempt: true,
 				createdAt: true,
 			},
@@ -46,7 +57,18 @@ export class UserCollectionRepository {
 			select: {
 				id: true,
 				user: { select: { id: true, createdAt: true, emailAddress: true, fullName: true, type: true, image: true } },
-				collection: { select: { id: true, name: true, createdAt: true, language: true, maxAttempts: true, givenMinutes: true, amountInTest: true } },
+				collection: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						language: true,
+						maxAttempts: true,
+						givenMinutes: true,
+						amountInTest: true,
+						science: { select: { id: true, name: true, createdAt: true } },
+					},
+				},
 				haveAttempt: true,
 				createdAt: true,
 			},
