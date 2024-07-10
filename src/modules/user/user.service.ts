@@ -76,7 +76,7 @@ export class UserService {
 
 		const tokens = await this.jwtService.getTokens({ id: user.id })
 
-		return { user: user, tokens: tokens, userInfo: userInfo }
+		return { user: user, tokens: tokens }
 	}
 
 	async create(payload: UserCreateRequest): Promise<UserCreateResponse> {

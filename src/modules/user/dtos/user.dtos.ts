@@ -289,9 +289,6 @@ export class UserSignInResponseDto implements UserSignInResponse {
 	@ApiProperty({ type: UserFindOneResponseDto })
 	user: UserFindOneResponse
 
-	@ApiProperty({ type: UserInfoFindOneResponseDto })
-	userInfo: UserInfoFindOneResponse
-
 	@ApiProperty({ type: SignInTokenDefinitionDto })
 	tokens: SignInTokenDefinition
 }
