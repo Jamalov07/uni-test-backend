@@ -1,6 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
+	ColBeforeQuestion,
+	ColBeforeQuestionAnswer,
+	CollectionBeforeCreateResponse,
 	CollectionCreateRequest,
 	CollectionDeleteRequest,
 	CollectionFindAllRequest,
@@ -10,7 +13,7 @@ import {
 	CollectionFindOneResponse,
 	CollectionUpdateRequest,
 } from '../interfaces'
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator'
 import { $Enums } from '@prisma/client'
 import { ScienceFindOneResponse, ScienceFindOneResponseDto } from '../../science'
 import { AdminFindOneResponse, AdminFindOneResponseDto } from '../../admin'
@@ -235,4 +238,82 @@ export class CollectionFindAllResponseDto implements CollectionFindAllResponse {
 
 	@ApiProperty({ type: CollectionFindOneResponseDto, isArray: true })
 	data: CollectionFindOneResponse[]
+}
+
+export class ColBeforeQuestionAnswerDto implements ColBeforeQuestionAnswer {
+	@ApiProperty({ example: 'toshkent' })
+	@IsNotEmpty()
+	@IsString()
+	text: string
+
+	@ApiProperty({ example: true })
+	@IsNotEmpty()
+	@IsBoolean()
+	isCorrect: boolean
+}
+export class ColBeforeQuestionDto implements ColBeforeQuestion {
+	@ApiProperty({ example: 'uzb poytaxti?' })
+	@IsNotEmpty()
+	@IsString()
+	text: string
+
+	@ApiProperty({ type: ColBeforeQuestionAnswerDto, isArray: true })
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => ColBeforeQuestionAnswerDto)
+	answers: ColBeforeQuestionAnswer[]
+}
+class ScienceDto {
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID()
+	id: string
+
+	@ApiProperty({ example: 'sciencename' })
+	@IsString()
+	name: string
+}
+
+export class CollectionBeforeCreateResponseDto implements CollectionBeforeCreateResponse {
+	@ApiProperty({ example: 10 })
+	@IsNumber()
+	@IsNotEmpty()
+	amountInTest: number
+
+	@ApiProperty({ example: 10 })
+	@IsNumber()
+	@IsNotEmpty()
+	givenMinutes: number
+
+	@ApiProperty({ example: 'uz' })
+	@IsEnum($Enums.CollectionLanguageEnum)
+	@IsNotEmpty()
+	language: $Enums.CollectionLanguageEnum
+
+	@ApiProperty({ example: 10 })
+	@IsNumber()
+	@IsNotEmpty()
+	maxAttempts: number
+
+	@ApiProperty({ example: 'name' })
+	@IsString()
+	@IsNotEmpty()
+	name: string
+
+	@ApiProperty({ example: 'uuid' })
+	@IsUUID('4')
+	@IsNotEmpty()
+	adminId: string
+
+	@ApiProperty({ type: ColBeforeQuestionDto, isArray: true })
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => ColBeforeQuestionDto)
+	questions: ColBeforeQuestion[]
+
+	@ApiProperty({ example: { id: 'uuid', name: 'sciencename' } })
+	@IsObject()
+	@ValidateNested()
+	@IsNotEmpty()
+	@Type(() => ScienceDto)
+	science: Pick<ScienceFindOneResponse, 'name' | 'id'>
 }

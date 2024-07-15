@@ -206,6 +206,24 @@ export class CollectionRepository {
 
 	async delete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
 		await this.prisma.collection.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		await this.prisma.question.updateMany({ where: { collectionId: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		const question = await this.prisma.question.findMany({ where: { deletedAt: null, collectionId: payload.id } })
+		await this.prisma.answer.updateMany({ where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null }, data: { deletedAt: new Date() } })
+
 		return null
+	}
+
+	async HardDelete(payload: CollectionDeleteRequest): Promise<CollectionDeleteResponse> {
+		await this.prisma.collection.delete({ where: { id: payload.id, deletedAt: null } })
+		await this.prisma.question.updateMany({ where: { collectionId: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
+		const question = await this.prisma.question.findMany({ where: { deletedAt: null, collectionId: payload.id } })
+		await this.prisma.answer.updateMany({ where: { questionId: { in: question.map((q) => q.id) }, deletedAt: null }, data: { deletedAt: new Date() } })
+
+		return null
+	}
+
+	async scienceFindOne(payload: { id: string }): Promise<{ id: string; name: string }> {
+		const s = await this.prisma.science.findFirst({ where: { id: payload.id, deletedAt: null }, select: { id: true, name: true } })
+		return s
 	}
 }

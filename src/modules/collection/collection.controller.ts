@@ -11,8 +11,10 @@ import {
 	CollectionUpdateRequestDto,
 	CollectionFindAllResponseDto,
 	CollectionFindOneResponseDto,
+	CollectionBeforeCreateResponseDto,
 } from './dtos'
 import {
+	CollectionBeforeCreateResponse,
 	CollectionCreateResponse,
 	CollectionDeleteResponse,
 	CollectionFindAllResponse,
@@ -99,6 +101,29 @@ export class CollectionController {
 	@ApiResponse({ type: null })
 	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionCreateResponse> {
 		return this.service.createWithQuestions(payload, file.buffer.toString())
+	}
+
+	@Post('check-with-questions')
+	@UseInterceptors(
+		FileInterceptor('file', {
+			fileFilter(req, file, cb) {
+				if (file.mimetype !== 'text/plain') {
+					return cb(new BadRequestException('Invalid file type'), false)
+				}
+				cb(null, true)
+			},
+		}),
+	)
+	@ApiConsumes('multipart/form-data')
+	@ApiResponse({ type: CollectionBeforeCreateResponseDto })
+	returnWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionBeforeCreateResponse> {
+		return this.service.returnWithQuestions(payload, file.buffer.toString())
+	}
+
+	@Post('confirm-with-questions')
+	@ApiResponse({ type: null })
+	confirmWithQuestions(@Body() payload: CollectionBeforeCreateResponseDto): Promise<CollectionCreateResponse> {
+		return this.service.confirmCreateWithQuestions(payload)
 	}
 
 	@Patch(':id')

@@ -54,6 +54,16 @@ export class ArchiveFindFullRequestDto implements ArchiveFindFullRequest {
 	@IsUUID('4')
 	@IsOptional()
 	userId?: string
+
+	@ApiPropertyOptional({ example: new Date() })
+	@IsDateString()
+	@IsOptional()
+	endDate?: Date
+
+	@ApiPropertyOptional({ example: new Date() })
+	@IsDateString()
+	@IsOptional()
+	startDate?: Date
 }
 
 export class ArchiveFindAllRequestDto implements ArchiveFindAllRequest {

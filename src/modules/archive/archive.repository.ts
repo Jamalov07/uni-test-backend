@@ -30,6 +30,19 @@ export class ArchiveRepository {
 	}
 
 	async findFull(payload: ArchiveFindFullRequest): Promise<ArchiveFindFullResponse> {
+		let dateOptions = {}
+
+		if (payload.startDate && payload.endDate) {
+			dateOptions = {
+				lte: payload.endDate,
+				gte: payload.startDate,
+			}
+		} else if (payload.startDate) {
+			dateOptions = {
+				lte: new Date(new Date(payload.startDate.setHours(0, 0, 0, 0)).setDate(payload.startDate.getDate() + 1)),
+				gte: new Date(payload.startDate.setHours(0, 0, 0, 0)),
+			}
+		}
 		const archives = await this.prisma.archive.findMany({
 			where: {
 				collectionId: payload.collectionId,
@@ -38,6 +51,7 @@ export class ArchiveRepository {
 				userId: payload.userId,
 				groupId: payload.groupId,
 				deletedAt: null,
+				createdAt: { ...dateOptions },
 			},
 			select: {
 				id: true,

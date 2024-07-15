@@ -16,6 +16,7 @@ import {
 	QuestionsCreateWithAnswersRequest,
 	QuestionsCreateWithAnswersResponse,
 } from './interfaces'
+import { CollectionBeforeCreateResponse } from '../collection'
 
 @Injectable()
 export class QuestionService {
@@ -81,7 +82,6 @@ export class QuestionService {
 				.includes('+')
 
 			if (!isExistTrueAnswer) {
-				await this.repository.deleteCollection({ id: payload.collectionId })
 				throw new BadRequestException(`Savolga to'g'ri javob berilmagan: ${questionWithAnswers[0]}`)
 			}
 
@@ -103,6 +103,52 @@ export class QuestionService {
 		await this.repository.createWithAnswers({ ...qwa })
 
 		return null
+	}
+
+	async confirmCreateManyWithAnswers(
+		collection: { collectionId: string },
+		payload: Pick<CollectionBeforeCreateResponse, 'questions'>,
+	): Promise<QuestionsCreateWithAnswersResponse> {
+		await this.findManyByTextsWithCollectionId({ collectionId: collection.collectionId, texts: payload.questions.map((q) => q.text) })
+
+		payload.questions.forEach((q) => {
+			if (!q.answers.filter((a) => a.isCorrect).length) {
+				throw new BadRequestException("To'g'ri javob berilmagan savol: " + q.text)
+			}
+		})
+
+		await this.repository.createWithAnswers({ collectionId: collection.collectionId, questions: payload.questions })
+
+		return null
+	}
+
+	async returnManyWithAnswers(text: string): Promise<Pick<CollectionBeforeCreateResponse, 'questions'>> {
+		const qwa: Pick<QuestionsCreateWithAnswersRequest, 'questions'> = { questions: [] }
+		const questions = text
+			.split('#')
+			.map((q) => q.trim())
+			.filter((q) => q.toString())
+
+		for (const q of questions) {
+			const questionWithAnswers = q
+				.split('\n')
+				.map((w) => w.trim())
+				.filter((w) => w.toString())
+
+			qwa.questions.push({
+				text: questionWithAnswers[0],
+				answers: questionWithAnswers
+					.map((q, i): any => {
+						const isCorrect = q[0] === '+' ? true : false
+						if (i !== 0) {
+							return { isCorrect: isCorrect, text: q.slice(1).trim() }
+						}
+					})
+					.slice(1),
+			})
+		}
+
+		return qwa
 	}
 
 	async createManyWithAnswers2(payload: Pick<QuestionsCreateWithAnswersRequest, 'collectionId'>, text: string): Promise<QuestionsCreateWithAnswersResponse> {

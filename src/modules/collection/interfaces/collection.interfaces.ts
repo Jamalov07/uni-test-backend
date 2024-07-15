@@ -88,6 +88,7 @@ export declare interface CollectionQuestion {
 	id: string
 	text: string
 	createdAt: Date
+	multipleChoice?: boolean
 	answers: QuestionAnswer[]
 }
 
@@ -103,3 +104,24 @@ export declare type CollectionCreateResponse = null
 export declare type CollectionUpdateResponse = null
 
 export declare type CollectionDeleteResponse = null
+
+export declare interface CollectionBeforeCreateResponse {
+	name: string
+	language: CollectionLanguageEnum
+	science: Pick<ScienceFindOneResponse, 'name' | 'id'>
+	maxAttempts: number
+	givenMinutes: number
+	amountInTest: number
+	adminId: string
+	questions: ColBeforeQuestion[]
+}
+
+export declare interface ColBeforeQuestion {
+	text: string
+	answers: ColBeforeQuestionAnswer[]
+}
+
+export declare interface ColBeforeQuestionAnswer {
+	text: string
+	isCorrect: boolean
+}

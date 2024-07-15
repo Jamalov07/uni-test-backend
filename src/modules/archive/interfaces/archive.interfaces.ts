@@ -12,6 +12,8 @@ export declare interface ArchiveFindFullRequest {
 	facultyId?: string
 	collectionId?: string
 	semestrId?: string
+	startDate?: Date
+	endDate?: Date
 }
 
 export declare interface ArchiveFindAllRequest {

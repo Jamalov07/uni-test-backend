@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { CollectionRepository } from './collection.repository'
 import {
+	CollectionBeforeCreateResponse,
 	CollectionCreateRequest,
 	CollectionCreateResponse,
 	CollectionDeleteRequest,
@@ -61,9 +62,24 @@ export class CollectionService {
 			throw new BadRequestException('Collections questions is empty!')
 		}
 
-		const { amountInTest, questions } = collection
+		const mappedQuestions = collection.questions.map((q) => {
+			return {
+				id: q.id,
+				text: q.text,
+				answers: q.answers,
+				createdAt: q.createdAt,
+				multipleChoice: q.answers.filter((a) => a.isCorrect === true).length > 1,
+			}
+		})
 
-		const shuffledQuestions = questions.sort(() => 0.5 - Math.random()).slice(0, amountInTest)
+		const { amountInTest } = collection
+
+		let repeatedQuestions = [...mappedQuestions]
+		while (repeatedQuestions.length < amountInTest) {
+			repeatedQuestions = repeatedQuestions.concat(mappedQuestions)
+		}
+
+		const shuffledQuestions = repeatedQuestions.sort(() => 0.5 - Math.random()).slice(0, amountInTest)
 
 		const shuffledQuestionsWithAnswers = shuffledQuestions.map((question) => ({
 			...question,
@@ -81,9 +97,9 @@ export class CollectionService {
 
 		let content = ''
 		collection.questions.forEach((q) => {
-			content = content + `S: ${q.text}\n`
+			content = content + `# ${q.text}\n`
 			q.answers.forEach((a) => {
-				content = content + `J: ${a.text}${a.isCorrect ? '+' : ''}\n`
+				content = content + `${a.isCorrect ? '+' : '-'} ${a.text}\n`
 			})
 			content = content + '\n'
 		})
@@ -107,8 +123,48 @@ export class CollectionService {
 	async createWithQuestions(payload: CollectionCreateRequest, text: string): Promise<CollectionCreateResponse> {
 		await this.findOneByName({ name: payload.name })
 		const collectionId = await this.repository.createWithReturningId(payload)
-		await this.questionService.createManyWithAnswers({ collectionId: collectionId }, text)
+		await this.questionService.createManyWithAnswers({ collectionId: collectionId }, text).catch(async (e) => {
+			await this.repository.HardDelete({ id: collectionId })
+			console.log(e)
+			throw new BadRequestException(e)
+		})
 		return null
+	}
+
+	async confirmCreateWithQuestions(payload: CollectionBeforeCreateResponse): Promise<CollectionCreateResponse> {
+		await this.findOneByName({ name: payload.name })
+		const collectionId = await this.repository.createWithReturningId({
+			adminId: payload.adminId,
+			amountInTest: payload.amountInTest,
+			givenMinutes: payload.givenMinutes,
+			language: payload.language,
+			maxAttempts: payload.maxAttempts,
+			name: payload.name,
+			scienceId: payload.science.id,
+		})
+		await this.questionService.confirmCreateManyWithAnswers({ collectionId: collectionId }, { questions: payload.questions }).catch(async (e) => {
+			await this.repository.HardDelete({ id: collectionId })
+			console.log(e)
+
+			throw new BadRequestException(e)
+		})
+		return null
+	}
+
+	async returnWithQuestions(payload: CollectionCreateRequest, text: string): Promise<CollectionBeforeCreateResponse> {
+		await this.findOneByName({ name: payload.name })
+		const ques = await this.questionService.returnManyWithAnswers(text)
+		const s = await this.repository.scienceFindOne({ id: payload.scienceId })
+		return {
+			amountInTest: payload.amountInTest,
+			givenMinutes: payload.givenMinutes,
+			language: payload.language,
+			maxAttempts: payload.maxAttempts,
+			name: payload.name,
+			science: s,
+			questions: ques.questions,
+			adminId: payload.adminId,
+		}
 	}
 
 	async update(params: CollectionFindOneRequest, payload: CollectionUpdateRequest): Promise<CollectionUpdateResponse> {
