@@ -338,3 +338,8 @@ export class ArchiveFindAllResponseDto implements ArchiveFindAllResponse {
 	@ApiProperty({ type: ArchiveFindOneResponseDto, isArray: true })
 	data: ArchiveFindOneResponse[]
 }
+
+export class ArchiveExcelResponseDto {
+	@ApiProperty({ example: 'url' })
+	url: string
+}

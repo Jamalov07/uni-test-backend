@@ -11,6 +11,7 @@ import {
 	ArchiveUpdateRequestDto,
 	ArchiveFindAllResponseDto,
 	ArchiveFindOneResponseDto,
+	ArchiveExcelResponseDto,
 } from './dtos'
 import { ArchiveCreateResponse, ArchiveDeleteResponse, ArchiveFindAllResponse, ArchiveFindFullResponse, ArchiveFindOneResponse, ArchiveUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
@@ -45,7 +46,7 @@ export class ArchiveController {
 
 	@Get('excel')
 	@Roles('admin', 'student')
-	@ApiResponse({ type: null })
+	@ApiResponse({ type: ArchiveExcelResponseDto })
 	findFullInExcel(@Query() payload: ArchiveFindFullRequestDto): Promise<{ url: string }> {
 		return this.service.downloadInExcel(payload)
 	}
