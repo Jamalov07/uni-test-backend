@@ -33,6 +33,16 @@ export declare interface CollectionCreateRequest {
 	adminId: string
 }
 
+export declare interface CollectionBeforeCreateRequest {
+	name?: string
+	language?: CollectionLanguageEnum
+	scienceId?: string
+	maxAttempts?: number
+	givenMinutes?: number
+	amountInTest?: number
+	adminId?: string
+}
+
 export declare interface CollectionUpdateRequest {
 	name?: string
 	language?: CollectionLanguageEnum

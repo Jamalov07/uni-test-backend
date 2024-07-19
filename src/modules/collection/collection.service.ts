@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { CollectionRepository } from './collection.repository'
 import {
+	CollectionBeforeCreateRequest,
 	CollectionBeforeCreateResponse,
 	CollectionCreateRequest,
 	CollectionCreateResponse,
@@ -151,10 +152,13 @@ export class CollectionService {
 		return null
 	}
 
-	async returnWithQuestions(payload: CollectionCreateRequest, text: string): Promise<CollectionBeforeCreateResponse> {
-		await this.findOneByName({ name: payload.name })
+	async returnWithQuestions(payload: CollectionBeforeCreateRequest, text: string): Promise<CollectionBeforeCreateResponse> {
+		payload.name ? await this.findOneByName({ name: payload.name }) : null
 		const ques = await this.questionService.returnManyWithAnswers(text)
-		const s = await this.repository.scienceFindOne({ id: payload.scienceId })
+		let s: any
+		if (payload.scienceId) {
+			s = await this.repository.scienceFindOne({ id: payload.scienceId })
+		}
 		return {
 			amountInTest: payload.amountInTest,
 			givenMinutes: payload.givenMinutes,

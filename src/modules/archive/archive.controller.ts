@@ -36,11 +36,18 @@ export class ArchiveController {
 		return this.service.findFull(payload)
 	}
 
+	@Get('excel-old')
+	@Roles('admin', 'student')
+	@ApiResponse({ type: null })
+	findFullInExcel1(@Query() payload: ArchiveFindFullRequestDto, @Res() res: Response): Promise<void> {
+		return this.service.downloadInExcel1(payload, res)
+	}
+
 	@Get('excel')
 	@Roles('admin', 'student')
 	@ApiResponse({ type: null })
-	findFullInExcel(@Query() payload: ArchiveFindFullRequestDto, @Res() res: Response): Promise<void> {
-		return this.service.downloadInExcel(payload, res)
+	findFullInExcel(@Query() payload: ArchiveFindFullRequestDto): Promise<{ url: string }> {
+		return this.service.downloadInExcel(payload)
 	}
 
 	@Get('all')

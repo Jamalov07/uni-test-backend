@@ -12,6 +12,7 @@ import {
 	CollectionFindAllResponseDto,
 	CollectionFindOneResponseDto,
 	CollectionBeforeCreateResponseDto,
+	CollectionBeforeCreateRequestDto,
 } from './dtos'
 import {
 	CollectionBeforeCreateResponse,
@@ -116,7 +117,7 @@ export class CollectionController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: CollectionBeforeCreateResponseDto })
-	returnWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionBeforeCreateResponse> {
+	returnWithQuestions(@Body() payload: CollectionBeforeCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionBeforeCreateResponse> {
 		return this.service.returnWithQuestions(payload, file.buffer.toString())
 	}
 

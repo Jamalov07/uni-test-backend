@@ -3,6 +3,7 @@ import { Type } from 'class-transformer'
 import {
 	ColBeforeQuestion,
 	ColBeforeQuestionAnswer,
+	CollectionBeforeCreateRequest,
 	CollectionBeforeCreateResponse,
 	CollectionCreateRequest,
 	CollectionDeleteRequest,
@@ -120,6 +121,49 @@ export class CollectionCreateRequestDto implements CollectionCreateRequest {
 	@IsUUID('4')
 	@IsNotEmpty()
 	adminId: string
+}
+
+export class CollectionBeforeCreateRequestDto implements CollectionBeforeCreateRequest {
+	@ApiProperty({ type: 'string', format: 'binary', description: 'TXT file' })
+	file: any
+
+	@ApiPropertyOptional({ example: 'name' })
+	@IsString()
+	@IsOptional()
+	name?: string
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	// @IsUUID('4')
+	@IsOptional()
+	scienceId?: string
+
+	@ApiPropertyOptional({ example: 'uz' })
+	// @IsEnum($Enums.CollectionLanguageEnum)
+	@IsOptional()
+	language?: $Enums.CollectionLanguageEnum
+
+	@ApiPropertyOptional({ example: 5 })
+	@IsNumber()
+	@IsOptional()
+	@Type(() => Number)
+	amountInTest?: number
+
+	@ApiPropertyOptional({ example: 5 })
+	@IsNumber()
+	@IsOptional()
+	@Type(() => Number)
+	givenMinutes?: number
+
+	@ApiPropertyOptional({ example: 5 })
+	@IsNumber()
+	@IsOptional()
+	@Type(() => Number)
+	maxAttempts?: number
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	// @IsUUID('4')
+	@IsOptional()
+	adminId?: string
 }
 
 export class CollectionUpdateRequestDto implements CollectionUpdateRequest {

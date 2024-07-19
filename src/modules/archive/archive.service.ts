@@ -17,6 +17,8 @@ import {
 import { UserCollectionRepository } from '../user-collection'
 import * as ExcelJs from 'exceljs'
 import { Response } from 'express'
+import * as path from 'path'
+import * as fs from 'fs'
 @Injectable()
 export class ArchiveService {
 	private readonly repository: ArchiveRepository
@@ -75,7 +77,8 @@ export class ArchiveService {
 		return null
 	}
 
-	async downloadInExcel(payload: ArchiveFindFullRequest, res: Response): Promise<void> {
+	async downloadInExcel1(payload: ArchiveFindFullRequest, res: Response): Promise<void> {
+		console.log(path.join(__dirname, '..', '..', '..', 'files', 'archives.xlsx'))
 		const archives = await this.repository.findFullForExcel(payload)
 
 		const workbook = new ExcelJs.Workbook()
@@ -151,6 +154,86 @@ export class ArchiveService {
 		res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 		res.write(buffer)
 		res.end()
+	}
+
+	async downloadInExcel(payload: ArchiveFindFullRequest): Promise<{ url: string }> {
+		const archives = await this.repository.findFullForExcel(payload)
+
+		const workbook = new ExcelJs.Workbook()
+		const worksheet = workbook.addWorksheet('results')
+
+		const mappedArchives = archives.map((a, i) => {
+			return [
+				i + 1,
+				a.user.fullName,
+				a.faculty.name,
+				a.course.stage,
+				a.semestr.stage,
+				a.group.name,
+				a.collection.science.name,
+				a.collection.name,
+				this.formatDate(a.startTime),
+				this.formatDate(a.endTime),
+				a.testCount,
+				a.result,
+			]
+		})
+
+		const headerCellStyle = {
+			fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: '000000' } },
+			font: { color: { argb: 'FFFFFF' } },
+			border: {
+				top: { style: 'thin', color: { argb: 'FFFFFF' } },
+				left: { style: 'thin', color: { argb: 'FFFFFF' } },
+				bottom: { style: 'thin', color: { argb: 'FFFFFF' } },
+				right: { style: 'thin', color: { argb: 'FFFFFF' } },
+			},
+		}
+
+		const table = [
+			['№', 'F.I.SH', 'Fakultet', 'Kurs', 'Semestr', 'Guruh', 'Fan', 'Test', 'Boshlangan vaqt', 'Tugatilgan vaqt', 'Umumiy testlar soni', 'Natija'],
+			...mappedArchives,
+		]
+
+		table.forEach((row, index) => {
+			worksheet.addRow(row)
+			if (index === 0) {
+				const header = worksheet.getRow(index + 1)
+				header.eachCell((cell) => {
+					cell.style = headerCellStyle as ExcelJs.Style
+				})
+			}
+		})
+
+		workbook.eachSheet((worksheet) => {
+			worksheet.eachRow((row) => {
+				row.alignment = { wrapText: true, horizontal: 'center', vertical: 'middle' }
+			})
+
+			worksheet.views = [
+				{
+					state: 'frozen',
+					ySplit: 1,
+					xSplit: 2,
+				},
+			]
+			worksheet.columns.forEach((column, i) => {
+				if (i === 0) {
+					column.width = 10
+				} else {
+					column.width = 20
+				}
+			})
+		})
+
+		const buffer = await workbook.xlsx.writeBuffer()
+		const filename = `archives-${Date.now()}.xlsx`
+		const filePath = path.join(__dirname, '..', '..', '..', 'files', filename)
+
+		fs.writeFileSync(filePath, Buffer.from(buffer))
+		console.log(`File saved to ${filePath}`)
+
+		return { url: `/files/${filename}` }
 	}
 
 	formatDate(date: any) {

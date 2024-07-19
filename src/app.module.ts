@@ -23,10 +23,16 @@ import { join } from 'path'
 
 @Module({
 	imports: [
-		ServeStaticModule.forRoot({
-			rootPath: join(__dirname, '..', 'images'),
-			serveRoot: '/uploads',
-		}),
+		ServeStaticModule.forRoot(
+			{
+				rootPath: join(__dirname, '..', 'images'),
+				serveRoot: '/uploads',
+			},
+			{
+				rootPath: join(__dirname, '..', 'files'),
+				serveRoot: '/files',
+			},
+		),
 		ConfigModule.forRoot({ isGlobal: true, load: [databaseConfig] }),
 		PrismaModule,
 		JWTModule,
