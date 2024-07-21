@@ -33,6 +33,7 @@ export class GroupRepository {
 				name: true,
 				createdAt: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return groups
@@ -51,6 +52,7 @@ export class GroupRepository {
 				name: true,
 				createdAt: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const groupsCount = await this.prisma.group.count({

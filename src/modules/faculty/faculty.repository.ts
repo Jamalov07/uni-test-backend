@@ -28,6 +28,7 @@ export class FacultyRepository {
 		const facultys = await this.prisma.faculty.findMany({
 			where: { deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return facultys
@@ -39,6 +40,7 @@ export class FacultyRepository {
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, name: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const facultysCount = await this.prisma.faculty.count({
@@ -83,9 +85,16 @@ export class FacultyRepository {
 	}
 
 	async getAllForSetCollections(): Promise<FacultyFindFullForSetCollection[]> {
-		const faculties = await this.prisma.faculty.findMany({ where: { deletedAt: null }, select: { id: true, name: true } })
-		const courses = await this.prisma.course.findMany({ where: { deletedAt: null }, select: { id: true, stage: true } })
-		const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true } })
+		const faculties = await this.prisma.faculty.findMany({
+			where: { deletedAt: null },
+			select: { id: true, name: true },
+		})
+		const courses = await this.prisma.course.findMany({
+			where: { deletedAt: null },
+			select: { id: true, stage: true },
+			orderBy: [{ createdAt: 'desc' }],
+		})
+		const semestrs = await this.prisma.semestr.findMany({ where: { deletedAt: null }, select: { id: true, stage: true }, orderBy: [{ createdAt: 'desc' }] })
 
 		const customFaculties = []
 		for (const f of faculties) {
@@ -101,6 +110,7 @@ export class FacultyRepository {
 							semestrId: s.id,
 						},
 						select: { id: true, name: true },
+						orderBy: [{ createdAt: 'desc' }],
 					})
 					const customGroups = []
 					for (const g of groups) {
@@ -110,6 +120,7 @@ export class FacultyRepository {
 								groupId: g.id,
 							},
 							select: { user: { select: { id: true, fullName: true } } },
+							orderBy: [{ createdAt: 'desc' }],
 						})
 						customGroups.push({ ...g, students: userInfos.map((u) => ({ ...u.user })) })
 					}

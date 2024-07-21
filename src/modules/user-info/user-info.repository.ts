@@ -37,6 +37,7 @@ export class UserInfoRepository {
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return userInfos
@@ -59,6 +60,7 @@ export class UserInfoRepository {
 				hemisId: true,
 				group: { select: { id: true, name: true, createdAt: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const userInfosCount = await this.prisma.userInfo.count({

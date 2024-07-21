@@ -31,6 +31,7 @@ export class AdminRepository {
 				deletedAt: null,
 			},
 			select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return admins
@@ -47,6 +48,7 @@ export class AdminRepository {
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, createdAt: true, fullName: true, emailAddress: true, image: true, type: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const adminsCount = await this.prisma.admin.count({

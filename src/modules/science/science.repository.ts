@@ -30,6 +30,7 @@ export class ScienceRepository {
 		const sciences = await this.prisma.science.findMany({
 			where: { deletedAt: null },
 			select: { id: true, name: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return sciences
@@ -41,6 +42,7 @@ export class ScienceRepository {
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, name: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const sciencesCount = await this.prisma.science.count({
@@ -125,6 +127,7 @@ export class ScienceRepository {
 					},
 				},
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return sciences
@@ -156,6 +159,7 @@ export class ScienceRepository {
 					},
 				},
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const mappedS = sciences.map((s) => {

@@ -42,6 +42,7 @@ export class CollectionRepository {
 				science: { select: { id: true, name: true, createdAt: true } },
 				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return collections
@@ -68,6 +69,7 @@ export class CollectionRepository {
 				science: { select: { id: true, name: true, createdAt: true } },
 				admin: { select: { emailAddress: true, fullName: true, id: true, image: true, type: true, createdAt: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const collectionsCount = await this.prisma.collection.count({

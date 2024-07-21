@@ -32,6 +32,7 @@ export class AnswerRepository {
 				isCorrect: true,
 				question: { select: { id: true, createdAt: true, text: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return answers
@@ -49,6 +50,7 @@ export class AnswerRepository {
 				isCorrect: true,
 				question: { select: { id: true, createdAt: true, text: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const answersCount = await this.prisma.answer.count({

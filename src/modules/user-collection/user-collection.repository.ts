@@ -44,6 +44,7 @@ export class UserCollectionRepository {
 				haveAttempt: true,
 				createdAt: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return userCollections
@@ -72,6 +73,7 @@ export class UserCollectionRepository {
 				haveAttempt: true,
 				createdAt: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const userCollectionsCount = await this.prisma.userCollection.count({

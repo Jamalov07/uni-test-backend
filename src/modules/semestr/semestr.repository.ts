@@ -27,6 +27,7 @@ export class SemestrRepository {
 		const semestrs = await this.prisma.semestr.findMany({
 			where: { deletedAt: null },
 			select: { id: true, stage: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return semestrs
@@ -38,6 +39,7 @@ export class SemestrRepository {
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, stage: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const semestrsCount = await this.prisma.semestr.count({})
@@ -54,6 +56,7 @@ export class SemestrRepository {
 		const semestr = await this.prisma.semestr.findFirst({
 			where: { id: payload.id, deletedAt: null },
 			select: { id: true, stage: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return semestr

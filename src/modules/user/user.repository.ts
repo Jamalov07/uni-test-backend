@@ -61,6 +61,7 @@ export class UserRepository {
 					},
 				},
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return users
@@ -101,6 +102,7 @@ export class UserRepository {
 					},
 				},
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const usersCount = await this.prisma.user.count({

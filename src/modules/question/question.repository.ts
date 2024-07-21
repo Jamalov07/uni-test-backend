@@ -33,6 +33,7 @@ export class QuestionRepository {
 				createdAt: true,
 				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return questions
@@ -49,6 +50,7 @@ export class QuestionRepository {
 				createdAt: true,
 				collection: { select: { id: true, createdAt: true, language: true, givenMinutes: true, maxAttempts: true, name: true, amountInTest: true } },
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const questionsCount = await this.prisma.question.count({

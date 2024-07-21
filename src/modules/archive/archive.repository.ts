@@ -79,6 +79,7 @@ export class ArchiveRepository {
 				startTime: true,
 				endTime: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return archives
@@ -120,6 +121,7 @@ export class ArchiveRepository {
 				startTime: true,
 				endTime: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return archives
@@ -163,6 +165,7 @@ export class ArchiveRepository {
 				startTime: true,
 				endTime: true,
 			},
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const archivesCount = await this.prisma.archive.count({

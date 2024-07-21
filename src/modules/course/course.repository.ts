@@ -27,6 +27,7 @@ export class CourseRepository {
 		const courses = await this.prisma.course.findMany({
 			where: { deletedAt: null },
 			select: { id: true, stage: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		return courses
@@ -38,6 +39,7 @@ export class CourseRepository {
 			skip: (payload.pageNumber - 1) * payload.pageSize,
 			take: payload.pageSize,
 			select: { id: true, stage: true, createdAt: true },
+			orderBy: [{ createdAt: 'desc' }],
 		})
 
 		const coursesCount = await this.prisma.course.count({})
