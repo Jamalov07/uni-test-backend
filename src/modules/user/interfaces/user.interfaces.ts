@@ -1,5 +1,5 @@
 import { UserTypeEnum } from '@prisma/client'
-import { UserInfoCreateRequest, UserInfoFindOneResponse } from '../../user-info'
+import { UserInfoCreateRequest, UserInfoFindOneResponse, UserInfoUpdateRequest } from '../../user-info'
 
 export declare interface UserFindFullRequest {
 	type?: UserTypeEnum
@@ -52,6 +52,8 @@ export declare interface UserUpdateRequest {
 	password?: string
 	emailAddress?: string
 }
+
+export declare type UserUpdateWithInfoRequest = UserUpdateRequest & Omit<UserInfoUpdateRequest, 'userId'>
 
 export declare interface UserDeleteRequest {
 	id: string

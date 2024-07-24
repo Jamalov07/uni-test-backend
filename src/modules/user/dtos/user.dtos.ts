@@ -13,6 +13,7 @@ import {
 	UserSignInResponse,
 	UserUpdateRequest,
 	UserCreateWithJsonFileRequest,
+	UserUpdateWithInfoRequest,
 } from '../interfaces'
 import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator'
 import { $Enums } from '@prisma/client'
@@ -206,6 +207,46 @@ export class UserUpdateRequestDto implements UserUpdateRequest {
 	@IsEnum($Enums.UserTypeEnum)
 	@IsOptional()
 	type?: $Enums.UserTypeEnum
+}
+
+export class UserUpdateWithInfoRequestDto implements UserUpdateWithInfoRequest {
+	@ApiPropertyOptional({ example: 'fullName' })
+	@IsString()
+	@IsOptional()
+	fullName?: string
+
+	@ApiPropertyOptional({ example: 'jn@gmail.com' })
+	@IsEmail()
+	@IsOptional()
+	emailAddress?: string
+
+	@ApiPropertyOptional({ example: '12345' })
+	@IsString()
+	@IsOptional()
+	password?: string
+
+	// @ApiPropertyOptional({ example: 'link' })
+	// @IsString()
+	// @IsOptional()
+	// image?: string
+
+	@ApiProperty({ type: 'string', format: 'binary', description: 'image file' })
+	image?: any
+
+	@ApiPropertyOptional({ example: 'student' })
+	@IsEnum($Enums.UserTypeEnum)
+	@IsOptional()
+	type?: $Enums.UserTypeEnum
+
+	@ApiPropertyOptional({ example: 'uuid' })
+	@IsUUID('4')
+	@IsOptional()
+	groupId?: string
+
+	@ApiPropertyOptional({ example: 'hemisid' })
+	@IsString()
+	@IsOptional()
+	hemisId?: string
 }
 
 export class UserDeleteRequestDto implements UserDeleteRequest {

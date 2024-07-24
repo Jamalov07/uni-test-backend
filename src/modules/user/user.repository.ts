@@ -339,4 +339,9 @@ export class UserRepository {
 		await this.prisma.user.update({ where: { id: payload.id, deletedAt: null }, data: { deletedAt: new Date() } })
 		return null
 	}
+
+	async hardDelete(payload: UserDeleteRequest): Promise<UserDeleteResponse> {
+		await this.prisma.user.delete({ where: { id: payload.id, deletedAt: null } })
+		return null
+	}
 }

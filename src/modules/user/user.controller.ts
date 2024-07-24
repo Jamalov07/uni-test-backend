@@ -191,7 +191,7 @@ export class UserController {
 	@ApiResponse({ type: null })
 	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined
-		return this.service.update(params, { ...payload, image: imagePath })
+		return this.service.updateWithUserInfo(params, { ...payload, image: imagePath })
 	}
 
 	@Delete(':id')

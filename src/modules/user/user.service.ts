@@ -18,6 +18,7 @@ import {
 	UserSignInResponse,
 	UserUpdateRequest,
 	UserUpdateResponse,
+	UserUpdateWithInfoRequest,
 } from './interfaces'
 import { UserInfoService } from '../user-info'
 import { JWTService } from '../jwt'
@@ -89,7 +90,11 @@ export class UserService {
 		const password = await bcrypt.hash(payload.password, 7)
 		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress }) : null
 		const userId = await this.repository.createWithReturningId({ ...payload, password: password })
-		await this.userInfoService.create({ groupId: payload.groupId, hemisId: payload.hemisId, userId: userId })
+		await this.userInfoService.create({ groupId: payload.groupId, hemisId: payload.hemisId, userId: userId }).catch(async (e) => {
+			console.log(e)
+			await this.repository.hardDelete({ id: userId })
+			throw new BadRequestException(e)
+		})
 
 		return null
 	}
@@ -108,6 +113,16 @@ export class UserService {
 			}
 		})
 		return this.repository.createWithJsonFile(mappedPayload)
+	}
+
+	async updateWithUserInfo(params: UserFindOneRequest, payload: UserUpdateWithInfoRequest): Promise<UserUpdateResponse> {
+		await this.findOne({ id: params.id })
+		payload.emailAddress ? await this.findOneByEmail({ emailAddress: payload.emailAddress, id: params.id }) : null
+		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
+		await this.repository.update({ ...params, ...payload, password })
+		const userInfo = await this.userInfoService.findOneByUserId({ userId: params.id })
+		await this.userInfoService.update({ id: userInfo.id }, { groupId: payload.groupId, hemisId: payload.hemisId })
+		return null
 	}
 
 	async update(params: UserFindOneRequest, payload: UserUpdateRequest): Promise<UserUpdateResponse> {

@@ -118,6 +118,7 @@ export class FacultyRepository {
 							where: {
 								deletedAt: null,
 								groupId: g.id,
+								user: { deletedAt: null },
 							},
 							select: { user: { select: { id: true, fullName: true } } },
 							orderBy: [{ createdAt: 'desc' }],

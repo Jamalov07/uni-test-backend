@@ -48,6 +48,14 @@ export class UserInfoService {
 		return userInfo
 	}
 
+	async findOneByUserId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
+		const userInfo = await this.repository.findByUser({ userId: payload.userId })
+		if (!userInfo) {
+			throw new BadRequestException('UserInfo not found')
+		}
+		return userInfo
+	}
+
 	async findOneByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
 		const userInfo = await this.repository.findOneByHemisId({ hemisId: payload.hemisId })
 		if (!userInfo) {
