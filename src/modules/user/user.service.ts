@@ -121,7 +121,7 @@ export class UserService {
 		const password = payload.password ? await bcrypt.hash(payload.password, 7) : undefined
 		await this.repository.update({ ...params, ...payload, password })
 		const userInfo = await this.userInfoService.findOneByUserId({ userId: params.id })
-		await this.userInfoService.update({ id: userInfo.id }, { groupId: payload.groupId, hemisId: payload.hemisId })
+		await this.userInfoService.update({ id: userInfo.id }, { groupId: payload.groupId, hemisId: payload.hemisId, userId: params.id })
 		return null
 	}
 
@@ -136,6 +136,8 @@ export class UserService {
 	async delete(payload: UserDeleteRequest): Promise<UserDeleteResponse> {
 		await this.findOne(payload)
 		await this.repository.delete(payload)
+		const userInfo = await this.userInfoService.findOneByUserId({ userId: payload.id })
+		await this.userInfoService.delete({ id: userInfo.id })
 		return null
 	}
 }

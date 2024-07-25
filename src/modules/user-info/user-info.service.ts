@@ -65,7 +65,7 @@ export class UserInfoService {
 	}
 
 	async findByHemisId(payload: Partial<UserInfoCreateRequest>): Promise<UserInfoFindOneResponse> {
-		const userInfo = await this.repository.findOneByHemisId({ hemisId: payload.hemisId })
+		const userInfo = await this.repository.findOneByHemisId2({ hemisId: payload.hemisId, userId: payload.userId })
 		if (userInfo) {
 			throw new BadRequestException('UserInfo with this hemisId already exists')
 		}
@@ -80,8 +80,8 @@ export class UserInfoService {
 
 	async update(params: UserInfoFindOneRequest, payload: UserInfoUpdateRequest): Promise<UserInfoUpdateResponse> {
 		await this.findOne({ id: params.id })
-		await this.findByHemisId({ hemisId: payload.hemisId })
-		payload.userId ? await this.findOneByUser({ userId: payload.userId }) : null
+		await this.findByHemisId({ hemisId: payload.hemisId, userId: payload.userId })
+		// payload.userId ? await this.findOneByUser({ userId: payload.userId }) : null
 
 		await this.repository.update({ ...params, ...payload })
 		return null
