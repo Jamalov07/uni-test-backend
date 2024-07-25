@@ -132,6 +132,7 @@ export class UserCollectionRepository {
 		})
 
 		let customPay = []
+		console.log('candidates', candidates)
 		if (candidates.length) {
 			for (const p of payload.userCollections) {
 				const col = candidates.find((c) => {

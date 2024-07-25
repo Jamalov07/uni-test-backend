@@ -70,7 +70,7 @@ export class QuestionController {
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createQuestionsWithFile(@Body() payload: QuestionsCreateWithAnswersDto, @UploadedFile() file: UploadedTxtFile): Promise<QuestionsCreateWithAnswersResponse> {
-		return this.service.createManyWithAnswers(payload, file.buffer.toString())
+		return this.service.createManyWithAnswers(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post()

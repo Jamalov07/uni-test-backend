@@ -101,7 +101,7 @@ export class CollectionController {
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
 	createWithQuestions(@Body() payload: CollectionCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionCreateResponse> {
-		return this.service.createWithQuestions(payload, file.buffer.toString())
+		return this.service.createWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post('check-with-questions')
@@ -118,7 +118,7 @@ export class CollectionController {
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: CollectionBeforeCreateResponseDto })
 	returnWithQuestions(@Body() payload: CollectionBeforeCreateRequestDto, @UploadedFile() file: UploadedTxtFile): Promise<CollectionBeforeCreateResponse> {
-		return this.service.returnWithQuestions(payload, file.buffer.toString())
+		return this.service.returnWithQuestions(payload, file.buffer.toString('utf-8'))
 	}
 
 	@Post('confirm-with-questions')
