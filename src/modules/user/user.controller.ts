@@ -2,19 +2,18 @@ import { BadGatewayException, BadRequestException, Body, Controller, Delete, Get
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service'
 import {
-	UserCreateRequestDto,
 	UserFindFullResponseDto,
 	UserDeleteRequestDto,
 	UserFindAllRequestDto,
 	UserFindFullRequestDto,
 	UserFindOneRequestDto,
-	UserUpdateRequestDto,
 	UserFindAllResponseDto,
 	UserFindOneResponseDto,
 	UserSignInRequestDto,
 	UserSignInResponseDto,
 	UserCreateWithInfoRequestDto,
 	UserCreateManyWithJsonFileDto,
+	UserUpdateWithInfoRequestDto,
 } from './dtos'
 import { UserCreateResponse, UserDeleteResponse, UserFindAllResponse, UserFindFullResponse, UserFindOneResponse, UserSignInResponse, UserUpdateResponse } from './interfaces'
 import { PAGE_NUMBER, PAGE_SIZE } from '../../constants'
@@ -189,7 +188,7 @@ export class UserController {
 	)
 	@ApiConsumes('multipart/form-data')
 	@ApiResponse({ type: null })
-	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
+	update(@Param() params: UserFindOneRequestDto, @Body() payload: UserUpdateWithInfoRequestDto, @UploadedFile() image: Express.Multer.File): Promise<UserUpdateResponse> {
 		const imagePath = image ? `/uploads/${image.filename}` : undefined
 		return this.service.updateWithUserInfo(params, { ...payload, image: imagePath })
 	}
