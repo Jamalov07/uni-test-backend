@@ -123,7 +123,6 @@ export class UserCollectionRepository {
 	}
 
 	async createMany(payload: UserCollectionCreateManyRequest): Promise<UserCollectionCreateResponse> {
-		await this.prisma.userCollection.deleteMany({ where: {} })
 		const candidates = await this.prisma.userCollection.findMany({
 			where: {
 				deletedAt: null,
@@ -132,7 +131,7 @@ export class UserCollectionRepository {
 		})
 
 		let customPay = []
-		console.log('candidates', candidates)
+		console.log('candidates', candidates.length)
 		if (candidates.length) {
 			for (const p of payload.userCollections) {
 				const col = candidates.find((c) => {
