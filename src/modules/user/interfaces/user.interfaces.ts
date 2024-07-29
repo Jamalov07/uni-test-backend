@@ -39,7 +39,7 @@ export declare interface UserCreateWithJsonFileRequest {
 	faculty: string
 	course: number
 	group: string
-	image: string
+	image?: string
 	hemis_id: string
 	password: string
 	semestr: number

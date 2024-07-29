@@ -153,8 +153,8 @@ export class UserCreateManyWithJsonFileDto implements UserCreateWithJsonFileRequ
 	password: string
 
 	@IsString()
-	@IsNotEmpty()
-	image: string
+	@IsOptional()
+	image?: string
 
 	@IsNumber()
 	@IsNotEmpty()
