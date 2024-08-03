@@ -4,6 +4,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { appConfig } from './configs'
+import * as BasicAuth from 'express-basic-auth'
 
 setImmediate(async (): Promise<void> => {
 	const app = await NestFactory.create<INestApplication>(AppModule, { cors: true })
@@ -11,13 +12,21 @@ setImmediate(async (): Promise<void> => {
 	app.use(json({ limit: '50mb' }))
 	app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
 
+	app.use(
+		'/docs*',
+		BasicAuth({
+			challenge: true,
+			users: { swaggerusername: 'swaggerpassword' },
+		}),
+	)
+
 	const swaggerConfig = new DocumentBuilder()
 		.addBearerAuth({
 			description: `[just text field] Please enter token in following format: Bearer <JWT>`,
 			name: 'Authorization',
-			bearerFormat: 'Bearer', // I`ve tested not to use this field, but the result was the same
+			bearerFormat: 'Bearer',
 			scheme: 'Bearer',
-			type: 'http', // I`ve attempted type: 'apiKey' too
+			type: 'http',
 			in: 'Header',
 		})
 		.build()

@@ -138,16 +138,16 @@ export class UserCollectionRepository {
 					return c.collectionId === p.collectionId && c.userId === p.userId
 				})
 				if (col) {
-					customPay.push({
-						collectionId: p.collectionId,
-						userId: p.userId,
-						haveAttempt: p.haveAttempt + col.haveAttempt,
-					})
+					// customPay.push({
+					// 	collectionId: p.collectionId,
+					// 	userId: p.userId,
+					// 	haveAttempt: p.haveAttempt + col.haveAttempt,
+					// })
 				} else {
 					customPay.push(p)
 				}
 			}
-			await this.prisma.userCollection.updateMany({ where: { id: { in: candidates.map((c) => c.id) } }, data: { deletedAt: new Date(), haveAttempt: 0 } })
+			// await this.prisma.userCollection.updateMany({ where: { id: { in: candidates.map((c) => c.id) } }, data: { deletedAt: new Date(), haveAttempt: 0 } })
 		} else {
 			customPay = payload.userCollections
 		}
